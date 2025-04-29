@@ -126,7 +126,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'luckeykarn0327@gmail.com'  # Your email address
-EMAIL_HOST_PASSWORD = '    '  # Use app password for Gmail
+EMAIL_HOST_PASSWORD = 'kedu juqx qrrs mzkb'  # Use app password for Gmail
 
 # Password reset timeout (in seconds)
 PASSWORD_RESET_TIMEOUT = 86400  # 24 hours

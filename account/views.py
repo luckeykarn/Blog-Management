@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import redirect
 
 
 
@@ -37,7 +38,8 @@ def user_login(request):
         # password = request.POST[]
         if user:
             login(request,user)
-            return HttpResponse("You are loged in successfulley!!!")
+            return redirect('my-blogs')
+
         else:
             return HttpResponse("Your username/password is incorrect")
     else:
