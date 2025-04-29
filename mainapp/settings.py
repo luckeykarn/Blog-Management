@@ -120,6 +120,18 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'luckeykarn0327@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = '    '  # Use app password for Gmail
+
+# Password reset timeout (in seconds)
+PASSWORD_RESET_TIMEOUT = 86400  # 24 hours
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

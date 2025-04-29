@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Profile</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -93,21 +93,38 @@
 </head>
 <body>
     <div class="container">
-        <h2>Login to Your Account</h2>
-        <form action="{% url 'user_login' %}" method="POST">
-            {% csrf_token %}    
+        <h2>Update Your Profile</h2>
+
+        <!-- ADD THIS PART BELOW -->
+    <!-- {% if user.is_superuser %}
+    <p style="color: green;">You are an Admin. You can manage all posts and users.</p>
+{% else %}
+    <p style="color: gray;">You are a regular user.</p>
+{% endif %}
+END -->
+
+        <form action="{%  url 'profile_update' %}" method="POST">
+            {% csrf_token %} 
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" value="{{request.user.username}}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{request.user.email}}" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" >
+                <input type="text" id="password" name="password">
             </div>
-            <button type="submit" class="submit-btn">Login</button>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="text" id="confirm-password" name="confirm-password">
+            </div>
+                 
+            <button type="submit" class="submit-btn">Save</button>
         </form>
-        <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
-        <p>Forgot Passord? <a href="{% url 'password_reset' %}">Click for Reset</a></p>
+        
     </div>
 </body>
 </html>

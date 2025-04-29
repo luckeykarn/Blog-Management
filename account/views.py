@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .forms import RegisterForm
 from django.http import HttpResponse
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.models import User
-# from dja
+from django.contrib.auth.hashers import make_password
+
+
 
 # Create your views here.
 def register(request):
@@ -46,3 +47,22 @@ def user_logout(request):
     logout(request)
     return HttpResponse("You are loged out successfulley!!!")
 
+def profile(request):
+   return render(request, 'profile.html')
+
+def Profile_Update(request):
+    if request.method == 'POST':
+        form_username = request.POST["username"]
+        form_email = request.POST["email"]
+        form_password = request.POST["password"]
+        print(form_username,form_email)
+        user_object = request.user
+        print(user_object)
+        user_object.username = form_username
+        user_object.email = form_email
+        if len(form_password)>2:
+            user_object.password = make_password(form_password)
+
+        user_object.save()
+        return HttpResponse("Profile Updated successfulley!!!")
+    
