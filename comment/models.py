@@ -1,9 +1,9 @@
 from django.db import models
-from post.models import Post
+from blogs.models import Blogs
 
 # Create your models here.
 class Comment(models.Model):
-    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    blog = models.ForeignKey(Blogs,on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     email = models.EmailField()
     body = models.TextField()

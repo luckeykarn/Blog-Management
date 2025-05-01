@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "post",
     "comment",
     "account",
     "blogs",
@@ -55,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mainapp.urls'
+AUTH_USER_MODEL = "account.CustomUser"
 
 TEMPLATES = [
     {

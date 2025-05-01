@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Control | BlogWave</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        }
+        .error-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    
+    <!-- No Proper Role Error -->
+    <div class="error-card max-w-md p-8 hidden" id="no-role-error">
+        <div class="text-center mb-6">
+            <i class="fas fa-user-slash text-6xl gradient-text mb-4"></i>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Role Not Assigned</h1>
+            <p class="text-gray-600">Your account doesn't have any assigned role. Please contact administrator.</p>
+        </div>
+        <div class="flex justify-center space-x-4 mt-6">
+            <a href="login.html" class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Try Another Account</a>
+            <a href="mailto:admin@blogwave.com" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-md hover:shadow-lg">Contact Admin</a>
+        </div>
+    </div>
+
+    <!-- Role Required Error -->
+    <div class="error-card max-w-md p-8 hidden" id="role-required-error">
+        <div class="text-center mb-6">
+            <i class="fas fa-user-lock text-6xl gradient-text mb-4"></i>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Role Required</h1>
+            <p class="text-gray-600">You need <span class="font-semibold" id="required-role">[Role Name]</span> privileges to access this page.</p>
+        </div>
+        <div class="flex justify-center space-x-4 mt-6">
+            <a href="dashboard.html" class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Back to Dashboard</a>
+            <a href="upgrade.html" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-md hover:shadow-lg">Upgrade Account</a>
+        </div>
+    </div>
+
+    <!-- Permission Error -->
+    <div class="error-card max-w-md p-8 hidden" id="permission-error">
+        <div class="text-center mb-6">
+            <i class="fas fa-ban text-6xl gradient-text mb-4"></i>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Permission Denied</h1>
+            <p class="text-gray-600">You don't have permission to perform this action.</p>
+        </div>
+        <div class="flex justify-center space-x-4 mt-6">
+            <a href="#" class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Go Back</a>
+            <a href="#" class="px-6 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-md hover:shadow-lg">Request Access</a>
+        </div>
+    </div>
+
+    <!-- Demo Script (would be server-side in real app) -->
+    <script>
+        // This simulates different error conditions - in a real app, your backend would determine which to show
+        const errorType = new URLSearchParams(window.location.search).get('error') || 'permission';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show the appropriate error based on URL parameter
+            document.getElementById(`${errorType}-error`).classList.remove('hidden');
+            
+            // For role required error, you could dynamically set the role name
+            if(errorType === 'role-required') {
+                const role = new URLSearchParams(window.location.search).get('role') || 'Author';
+                document.getElementById('required-role').textContent = role;
+            }
+        });
+    </script>
+</body>
+</html>

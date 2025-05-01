@@ -1,12 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth import login,logout,authenticate
-from django.contrib.auth.models import User
+from .models import CustomUser as User
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import redirect
 from .decorators import author_required
-from .models import Profile
-from .decorators import author_required
+
 
 
 
@@ -19,36 +18,35 @@ def register(request):
         email = all_form_data['email']
         password = all_form_data['password']
         print("we are registering signup")
-        User.objects.create(username=username,email=email,password=password)
+        hash_password = make_password(password)
+        User.objects.create(username=username,email=email,password=hash_password)
         return redirect('user_login')
     
     else:
         return render(request, 'register.html')
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login
-from .models import Profile  # make sure to import your Profile model
-
 def user_login(request):
+    # print("method name:",request.method)
     if request.method == 'POST':
-        # Make sure to include csrf_token in your template form
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        
-        user = authenticate(request, username=username, password=password)
-        
-        if user is not None:
-            # Create profile if it doesn't exist
-            Profile.objects.get_or_create(user=user)
-            login(request, user)
-            return redirect('my-blogs')  # make sure 'my-blogs' is a valid URL name
+        # pass
+        all_form_data = request.POST
+        print(all_form_data)
+        print("type of all_form_data",type(all_form_data))
+        form_username = all_form_data['username']
+        form_password = all_form_data['password']
+        user = authenticate(request,username=form_username,password=form_password)
+        # user = User.objects.get(username=form_username)
+        # print("user object:",user.__dict__)
+        # username = request.POST['username']
+        # password = request.POST[]
+        if user:
+            login(request,user)
+            return redirect('my-blogs')
+
         else:
-            # Return to login page with error message
-            return render(request, 'login.html', {'error': 'Invalid username or password'})
-    
-    # GET request - show login form
-    return render(request, 'login.html')
+            return HttpResponse("Your username/password is incorrect")
+    else:
+        return render(request, 'login.html')
 
 def user_logout(request):
     logout(request)
@@ -103,7 +101,8 @@ def Profile_Update(request):
 # from django.shortcuts import render
 # from .decorators import author_required
 
-@author_required
-def create_post(request):
-    # this view only can be accessed by authors and admin
-    return render(request, 'create_post.html')
+
+def permission_error(request):
+    # This view can only be accessed by Authors or Admins
+    return render(request, 'permission_error.html')
+
