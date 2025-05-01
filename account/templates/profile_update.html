@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogWave - Update Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 28rem;
+            overflow: hidden;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .profile-body {
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            background-color: #f9fafb;
+            padding-right: 3rem;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+            background-color: white;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 2.75rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .password-toggle:hover {
+            color: #4f46e5;
+        }
+        .save-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+        .error {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e5e7eb;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-card" x-data="{
+        username: '{{request.user.username}}',
+        email: '{{request.user.email}}',
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+        showCurrentPassword: false,
+        showNewPassword: false,
+        showConfirmPassword: false,
+        avatar: '',
+        errors: {},
+        
+        validateForm() {
+            this.errors = {};
+            let valid = true;
+            
+            if (!this.username) {
+                this.errors.username = 'Username is required';
+                valid = false;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(this.email)) {
+                this.errors.email = 'Please enter a valid email';
+                valid = false;
+            }
+            
+            if (this.newPassword && this.newPassword.length < 8) {
+                this.errors.newPassword = 'Password must be at least 8 characters';
+                valid = false;
+            }
+            
+            if (this.newPassword && this.newPassword !== this.confirmPassword) {
+                this.errors.confirmPassword = 'Passwords do not match';
+                valid = false;
+            }
+            
+            return valid;
+        },
+        
+        updateProfile() {
+            if (this.validateForm()) {
+                // In a real app, send data to server here
+                console.log('Updating profile:', {
+                    username: this.username,
+                    email: this.email,
+                    newPassword: this.newPassword || 'unchanged'
+                });
+                
+                alert('Profile updated successfully!');
+                // Reset password fields
+                this.currentPassword = '';
+                this.newPassword = '';
+                this.confirmPassword = '';
+            }
+        },
+        
+        changeAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.avatar = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    }">
+        <div class="profile-header">
+            <h1 class="text-2xl font-bold">Update Profile</h1>
+            <p class="mt-2 opacity-90">Manage your account information</p>
+        </div>
+
+        <div class="profile-body">
+            <div class="avatar-upload">
+                <input type="file" id="avatar-input" class="hidden" @change="changeAvatar" accept="image/*">
+                <label for="avatar-input">
+                    <img :src="avatar" class="avatar-preview" alt="Profile picture">
+                </label>
+            </div>
+            
+            <form @submit.prevent="updateProfile">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input x-model="username" type="text" class="form-input" placeholder="Enter username">
+                    <p class="error" x-text="errors.username" x-show="errors.username"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input x-model="email" type="email" class="form-input" placeholder="Enter email">
+                    <p class="error" x-text="errors.email" x-show="errors.email"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <div class="relative">
+                        <input x-model="currentPassword" 
+                               :type="showCurrentPassword ? 'text' : 'password'" 
+                               class="form-input" 
+                               placeholder="Enter current password">
+                        <i @click="showCurrentPassword = !showCurrentPassword" 
+                           class="password-toggle"
+                           :class="showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <div class="relative">
+                        <input x-model="newPassword" 
+                               :type="showNewPassword ? 'text' : 'password'" 
+                               class="form-input" 
+                               placeholder="Enter new password">
+                        <i @click="showNewPassword = !showNewPassword" 
+                           class="password-toggle"
+                           :class="showNewPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                    </div>
+                    <p class="error" x-text="errors.newPassword" x-show="errors.newPassword"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <div class="relative">
+                        <input x-model="confirmPassword" 
+                               :type="showConfirmPassword ? 'text' : 'password'" 
+                               class="form-input" 
+                               placeholder="Confirm new password">
+                        <i @click="showConfirmPassword = !showConfirmPassword" 
+                           class="password-toggle"
+                           :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                    </div>
+                    <p class="error" x-text="errors.confirmPassword" x-show="errors.confirmPassword"></p>
+                </div>
+                
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save mr-2"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

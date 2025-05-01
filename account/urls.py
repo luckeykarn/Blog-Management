@@ -9,6 +9,8 @@ urlpatterns = [
     path('logout/', views.user_logout, name='userlogout'),
     path('profile/', views.profile, name='profile'),
     path('profile-update/', views.Profile_Update,name="profile_update"),
+     path('create_post/', views.create_post,name="post_create"),
+    
    
     # password reset urls
     
