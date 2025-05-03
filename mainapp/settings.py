@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "comment",
     "account",
     "blogs",
-    "taggit"
+    "taggit",
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -132,6 +133,15 @@ EMAIL_HOST_PASSWORD = 'kedu juqx qrrs mzkb'  # Use app password for Gmail
 # Password reset timeout (in seconds)
 PASSWORD_RESET_TIMEOUT = 86400  # 24 hours
 
+# configure TinyMCE
+# settings.py
+# TINYMCE_DEFAULT_CONFIG = {
+#     'height': 360,
+#     'width': 800,
+#     'menubar': True,
+#     'plugins': 'advlist autolink lists link image charmap print preview anchor',
+#     'toolbar': 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+# }
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

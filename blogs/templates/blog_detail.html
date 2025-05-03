@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ blog.title }} | ModernBlog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .like-btn {
+            transition: all 0.2s ease;
+        }
+        .like-btn:hover {
+            transform: scale(1.1);
+        }
+        .like-btn.liked {
+            color: #ef4444;
+        }
+        .tag {
+            transition: all 0.2s ease;
+        }
+        .tag:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            color: #374151;
+        }
+        .content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+        .content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+        .content img {
+            border-radius: 0.75rem;
+            margin: 2rem 0;
+            max-width: 100%;
+            height: auto;
+        }
+        .content blockquote {
+            border-left: 4px solid #6366f1;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: #4b5563;
+        }
+        .content ul, .content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        .content ul {
+            list-style-type: disc;
+        }
+        .content ol {
+            list-style-type: decimal;
+        }
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+        .content a {
+            color: #6366f1;
+            text-decoration: underline;
+        }
+        .content a:hover {
+            color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-white py-6 px-4 shadow-sm sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="{% url 'my-blogs' %}" class="text-2xl font-bold text-gray-900 flex items-center">
+                <span class="gradient-text">Modern</span><span class="text-gray-800">Blog</span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <nav class="hidden md:block">
+                    <ul class="flex space-x-8">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">Home</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">Articles</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">About</a></li>
+                    </ul>
+                </nav>
+                <div class="flex items-center space-x-3">
+                    {% if request.user.is_authenticated %}
+                        <div class="relative group">
+                            <div class="flex items-center space-x-2">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full cursor-pointer object-cover">
+                                <span class="hidden md:inline text-gray-700 font-medium">{{request.user.username}}</span>
+                            </div>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden group-hover:block border border-gray-100">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
+                                <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'user_login' %}" class="auth-btn px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">Login</a>
+                        <a href="{% url 'signup' %}" class="auth-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Content -->
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <article class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <!-- Featured Image -->
+            <div class="w-full h-96 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                     alt="{{ blog.title }}" 
+                     class="w-full h-full object-cover">
+            </div>
+            
+            <!-- Article Header -->
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center space-x-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                             alt="{{ blog.author.username }}" 
+                             class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ blog.author.username }}</p>
+                            <p class="text-xs text-gray-500">{{ blog.created_date|date:"F j, Y" }} · {{ blog.read_time }} min read</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="like-btn text-gray-400 hover:text-gray-600 text-lg" data-blog-id="{{ blog.id }}">
+                            <i class="far fa-heart"></i>
+                            <span class="text-sm ml-1">{{ blog.likes.count }}</span>
+                        </button>
+                        <button class="text-gray-400 hover:text-indigo-600 text-lg">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-indigo-600 text-lg">
+                            <i class="fas fa-share"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Title and Tags -->
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{ blog.title }}</h1>
+                
+                <div class="flex flex-wrap gap-2 mb-8">
+                    {% for tag in blog.tags.all %}
+                    <span class="tag bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-medium">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                
+                <!-- Content -->
+                <div class="content prose max-w-none">
+                    {{ blog.content|safe }}
+                </div>
+            </div>
+            
+            <!-- Article Footer -->
+            <div class="border-t border-gray-100 p-8">
+                <div class="flex justify-between items-center">
+                    <div class="flex space-x-4">
+                        <button class="like-btn flex items-center space-x-1 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50" data-blog-id="{{ blog.id }}">
+                            <i class="far fa-heart"></i>
+                            <span>Like</span>
+                            <span class="text-gray-600">({{ blog.likes.count }})</span>
+                        </button>
+                        <button class="flex items-center space-x-1 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 comment-toggle">
+                            <i class="far fa-comment"></i>
+                            <span>Comment</span>
+                            <span class="text-gray-600">({{ blog.comments.count }})</span>
+                        </button>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </article>
+        
+        <!-- Comments Section -->
+        <section class="mt-12 bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="p-8 border-b border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-900">Comments ({{ blog.comments.count }})</h2>
+            </div>
+            
+            <!-- Comment Form -->
+            {% if request.user.is_authenticated %}
+            <div class="p-8 border-b border-gray-100">
+                <form class="space-y-4">
+                    <div class="flex items-start space-x-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                             alt="{{ request.user.username }}" 
+                             class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <textarea class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-100" 
+                                      placeholder="Share your thoughts..." rows="3"></textarea>
+                            <div class="flex justify-end mt-2">
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 font-medium">Post Comment</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div class="p-8 border-b border-gray-100 text-center">
+                <p class="text-gray-600 mb-4">You must be logged in to post a comment.</p>
+                <div class="flex space-x-3 justify-center">
+                    <a href="{% url 'user_login' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 text-sm font-medium">Login</a>
+                    <a href="{% url 'signup' %}" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 text-sm font-medium">Sign Up</a>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Comments List -->
+            <div class="divide-y divide-gray-100">
+                {% for comment in blog.comments.all %}
+                <div class="p-8">
+                    <div class="flex items-start space-x-4">
+                        <img src="https://randomuser.me/api/portraits/men/{{ forloop.counter|add:20 }}.jpg" 
+                             alt="{{ comment.user.username }}" 
+                             class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">{{ comment.user.username }}</p>
+                                    <p class="text-xs text-gray-500">{{ comment.created_at|timesince }} ago</p>
+                                </div>
+                                <button class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            <p class="text-gray-700 mb-3">{{ comment.content }}</p>
+                            <div class="flex items-center space-x-4">
+                                <button class="text-xs text-gray-500 hover:text-gray-700 flex items-center space-x-1">
+                                    <i class="far fa-thumbs-up"></i>
+                                    <span>Like</span>
+                                </button>
+                                <button class="text-xs text-gray-500 hover:text-gray-700 flex items-center space-x-1">
+                                    <i class="far fa-comment"></i>
+                                    <span>Reply</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Replies (if any) -->
+                            {% if comment.replies.all %}
+                            <div class="mt-4 pl-6 border-l-2 border-gray-100 space-y-4">
+                                {% for reply in comment.replies.all|slice:":2" %}
+                                <div class="pt-4">
+                                    <div class="flex items-start space-x-3">
+                                        <img src="https://randomuser.me/api/portraits/women/{{ forloop.counter|add:30 }}.jpg" 
+                                             alt="{{ reply.user.username }}" 
+                                             class="w-8 h-8 rounded-full object-cover flex-shrink-0">
+                                        <div>
+                                            <div class="flex items-center justify-between mb-1">
+                                                <div>
+                                                    <p class="text-xs font-medium text-gray-900">{{ reply.user.username }}</p>
+                                                    <p class="text-xs text-gray-500">{{ reply.created_at|timesince }} ago</p>
+                                                </div>
+                                            </div>
+                                            <p class="text-sm text-gray-700">{{ reply.content }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                                {% if comment.replies.count > 2 %}
+                                <button class="text-xs text-indigo-600 hover:text-indigo-800 font-medium mt-2">
+                                    View all {{ comment.replies.count }} replies
+                                </button>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-8 text-center text-gray-500">
+                    No comments yet. Be the first to share your thoughts!
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        
+        <!-- Related Articles -->
+        <section class="mt-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">More from {{ blog.author.username }}</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for related_blog in related_blogs %}
+                <article class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow">
+                    <a href="{% url 'blog_detail' related_blog.slug %}">
+                        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                             alt="{{ related_blog.title }}" 
+                             class="w-full h-40 object-cover">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-xs text-gray-500">{{ related_blog.created_date|date:"M d, Y" }}</span>
+                                <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">{{ related_blog.category }}</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{ related_blog.title }}</h3>
+                            <p class="text-gray-600 text-sm line-clamp-2">{{ related_blog.content|truncatewords:20 }}</p>
+                        </div>
+                    </a>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-12 border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="{% url 'my-blogs' %}" class="text-2xl font-bold flex items-center">
+                        <span class="gradient-text">Modern</span><span class="text-gray-800">Blog</span>
+                    </a>
+                    <p class="mt-4 text-gray-500 text-sm">A platform for writers and thinkers to share their ideas with the world.</p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Explore</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Popular Posts</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Recent Posts</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Top Writers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Categories</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">About Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Careers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Help Center</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Community</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
+                <p>© 2023 ModernBlog. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Like functionality
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const blogId = this.getAttribute('data-blog-id');
+                const heartIcon = this.querySelector('i');
+                
+                // Toggle liked state
+                this.classList.toggle('liked');
+                heartIcon.classList.toggle('far');
+                heartIcon.classList.toggle('fas');
+                
+                // Update like count
+                const likeCountElements = document.querySelectorAll(`.like-btn[data-blog-id="${blogId}"] span`);
+                likeCountElements.forEach(span => {
+                    const currentCount = parseInt(span.textContent);
+                    span.textContent = this.classList.contains('liked') ? currentCount + 1 : currentCount - 1;
+                });
+                
+                // In a real app, you would send an AJAX request here to update the like in the database
+                // fetch(`/blogs/${blogId}/like/`, { method: 'POST' })
+                //     .then(response => response.json())
+                //     .then(data => {
+                //         likeCount.textContent = data.likes_count;
+                //     });
+            });
+        });
+
+        // Toggle comment form
+        document.querySelector('.comment-toggle')?.addEventListener('click', function() {
+            document.querySelector('#comments-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+    </script>
+</body>
+</html>

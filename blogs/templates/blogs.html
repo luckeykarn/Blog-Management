@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ModernBlog | Minimal Blog Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #fafafa;
+            background-color: #f8fafc;
         }
         .post-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            overflow: hidden;
         }
         .post-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
         }
         .auth-btn {
             transition: all 0.2s ease;
@@ -26,7 +28,7 @@
             transform: translateY(-1px);
         }
         .create-btn {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
             transition: all 0.3s ease;
         }
@@ -35,43 +37,69 @@
             box-shadow: 0 10px 15px rgba(79, 70, 229, 0.3);
         }
         .gradient-text {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+        .tag {
+            transition: all 0.2s ease;
+        }
+        .tag:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .comment-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .comment-section.active {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+        .like-btn {
+            transition: all 0.2s ease;
+        }
+        .like-btn:hover {
+            transform: scale(1.1);
+        }
+        .like-btn.liked {
+            color: #ef4444;
         }
     </style>
 </head>
 <body class="min-h-screen">
     <!-- Header with Auth -->
     <header class="bg-white py-6 px-4 shadow-sm sticky top-0 z-10">
-        <div class="max-w-5xl mx-auto flex justify-between items-center">
-            <a href="{% url 'my-blogs' %}" class="text-2xl font-medium text-gray-900">
-                <span class="gradient-text">Modern</span>Blog
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="{% url 'my-blogs' %}" class="text-2xl font-bold text-gray-900 flex items-center">
+                <span class="gradient-text">Modern</span><span class="text-gray-800">Blog</span>
             </a>
             <div class="flex items-center space-x-4">
                 <nav class="hidden md:block">
                     <ul class="flex space-x-8">
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Home</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Articles</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">About</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">Home</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">Articles</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">About</a></li>
                     </ul>
                 </nav>
                 <div class="flex items-center space-x-3">
                     {% if request.user.is_authenticated %}
-                        <!-- <a href="{% url 'postblog' %}" class="create-btn px-4 py-2 text-white rounded-md flex items-center">
-                            <i class="fas fa-plus mr-2"></i> Create
-                        </a> -->
                         <div class="relative group">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full cursor-pointer">
-                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
-                                <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                            <div class="flex items-center space-x-2">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full cursor-pointer object-cover">
+                                <span class="hidden md:inline text-gray-700 font-medium">{{request.user.username}}</span>
+                            </div>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden group-hover:block border border-gray-100">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
+                                <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
                             </div>
                         </div>
                     {% else %}
-                        <a href="{% url 'user_login' %}" class="auth-btn px-4 py-2 text-gray-700 hover:text-gray-900">Login</a>
-                        <a href="{% url 'signup' %}" class="auth-btn px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Sign Up</a>
+                        <a href="{% url 'user_login' %}" class="auth-btn px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">Login</a>
+                        <a href="{% url 'signup' %}" class="auth-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium">Sign Up</a>
                     {% endif %}
                 </div>
             </div>
@@ -80,15 +108,15 @@
 
     <!-- Hero Section -->
     {% if not request.user.is_authenticated %}
-    <section class="py-16 md:py-24 bg-gradient-to-r from-indigo-50 to-purple-50">
-        <div class="max-w-3xl mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Share Your <span class="gradient-text">Thoughts</span></h1>
-            <p class="text-xl text-gray-600 mb-8">A clean platform for writers and readers</p>
+    <section class="py-20 md:py-28 bg-gradient-to-r from-indigo-50 to-purple-50">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">Share Your <span class="gradient-text">Thoughts</span> With The World</h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">A clean, modern platform for writers to express themselves and readers to discover inspiring content.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{% url 'signup' %}" class="create-btn px-8 py-3 text-white rounded-md flex items-center justify-center">
-                    <i class="fas fa-user-plus mr-2"></i> Sign Up
+                <a href="{% url 'signup' %}" class="create-btn px-8 py-4 text-white rounded-lg flex items-center justify-center text-lg font-medium">
+                    <i class="fas fa-user-plus mr-2"></i> Get Started
                 </a>
-                <a href="{% url 'user_login' %}" class="px-8 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 flex items-center justify-center">
+                <a href="{% url 'user_login' %}" class="px-8 py-4 border border-gray-200 bg-white text-gray-700 rounded-lg hover:bg-gray-50 flex items-center justify-center text-lg font-medium shadow-sm">
                     <i class="fas fa-sign-in-alt mr-2"></i> Login
                 </a>
             </div>
@@ -96,8 +124,9 @@
     </section>
     {% else %}
     <section class="py-8 bg-white">
-        <div class="max-w-5xl mx-auto px-4 flex justify-end">
-            <a href="{% url 'postblog' %}" class="create-btn px-6 py-3 text-white rounded-md flex items-center">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <h2 class="text-2xl font-bold text-gray-800">Latest Articles</h2>
+            <a href="{% url 'postblog' %}" class="create-btn px-6 py-3 text-white rounded-lg flex items-center font-medium">
                 <i class="fas fa-plus mr-2"></i> Create New Post
             </a>
         </div>
@@ -106,79 +135,152 @@
 
     <!-- Featured Posts -->
     <section class="py-12 bg-gray-50">
-        <div class="max-w-5xl mx-auto px-4">
+        <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-semibold text-gray-900">Featured Articles</h2>
+                <h2 class="text-2xl font-bold text-gray-900">Featured Articles</h2>
                 {% if request.user.is_authenticated %}
-                <a href="{% url 'postblog' %}" class="create-btn px-4 py-2 text-white rounded-md text-sm flex items-center md:hidden">
-                    <i class="fas fa-plus mr-1"></i> New
+                <a href="{% url 'postblog' %}" class="create-btn px-4 py-2 text-white rounded-md text-sm flex items-center md:hidden font-medium">
+                    <i class="fas fa-plus mr-1"></i> New Post
                 </a>
                 {% endif %}
             </div>
             
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Post 1 -->
-                <article class="post-card bg-white rounded-xl overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
-                         alt="Post cover" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm text-gray-500">May 15, 2023</span>
-                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">Technology</span>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Blog Posts -->
+                {% for blog in blogs %}
+                <article class="post-card bg-white rounded-xl overflow-hidden border border-gray-100">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                            alt="Post cover" class="w-full h-48 object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                            <div class="flex items-center">
+                                <img src="https://randomuser.me/api/portraits/men/{{ forloop.counter|add:10 }}.jpg" 
+                                     alt="{{ blog.author.username }}" 
+                                     class="w-8 h-8 rounded-full border-2 border-white mr-2 object-cover">
+                                <span class="text-white text-sm font-medium">{{ blog.author.username }}</span>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mt-2 mb-3">The Art of Simple Living</h3>
-                        <p class="text-gray-600 mb-4">Exploring how minimalism can lead to a more focused life.</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-gray-500">{{ blog.created_date|date:"M d, Y" }}</span>
+                            <div class="flex space-x-2">
+                                {% for tag in blog.tags.all %}
+                                <span class="tag bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">{{ blog.title }}</h3>
+                        <p class="text-gray-600 mb-4 line-clamp-3">{{ blog.content|truncatewords:30 }}</p>
                         <div class="flex justify-between items-center">
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
-                                Read Article <i class="fas fa-arrow-right ml-2"></i>
+                            <a href="{% url 'blog_detail' %}?slug={{blog.slug}}" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center text-sm">
+                                Read More <i class="fas fa-arrow-right ml-2 text-xs"></i>
                             </a>
+                            <div class="flex items-center space-x-3">
+                                <button class="like-btn text-gray-400 hover:text-gray-600" data-blog-id="{{ blog.id }}">
+                                    <i class="far fa-heart"></i>
+                                    <span class="text-xs ml-1">{{ blog.likes.count }}</span>
+                                </button>
+                                <button class="comment-toggle text-gray-400 hover:text-gray-600" data-blog-id="{{ blog.id }}">
+                                    <i class="far fa-comment"></i>
+                                    <span class="text-xs ml-1">{{ blog.comments.count }}</span>
+                                </button>
+                                {% if request.user.is_authenticated %}
+                                <button class="text-gray-400 hover:text-indigo-600">
+                                    <i class="far fa-bookmark"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comment Section (Hidden by default) -->
+                    <div class="comment-section bg-gray-50 border-t border-gray-100" id="comments-{{ blog.id }}">
+                        <div class="p-6">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-4">COMMENTS ({{ blog.comments.count }})</h4>
+                            
+                            <!-- Comment Form -->
                             {% if request.user.is_authenticated %}
-                            <button class="text-gray-400 hover:text-indigo-600">
-                                <i class="far fa-bookmark"></i>
-                            </button>
+                            <form class="mb-6">
+                                <div class="flex items-start space-x-3">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                                         alt="{{ request.user.username }}" 
+                                         class="w-8 h-8 rounded-full object-cover">
+                                    <div class="flex-1">
+                                        <textarea class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-100" 
+                                                  placeholder="Add a comment..." rows="1"></textarea>
+                                        <button type="submit" class="mt-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700">Post</button>
+                                    </div>
+                                </div>
+                            </form>
                             {% endif %}
+                            
+                            <!-- Comments List -->
+                            <div class="space-y-4">
+                                {% for comment in blog.comments.all|slice:":3" %}
+                                <div class="flex space-x-3">
+                                    <img src="https://randomuser.me/api/portraits/men/{{ forloop.counter|add:20 }}.jpg" 
+                                         alt="{{ comment.user.username }}" 
+                                         class="w-8 h-8 rounded-full object-cover">
+                                    <div>
+                                        <div class="bg-white p-3 rounded-lg shadow-sm">
+                                            <div class="flex items-center space-x-2 mb-1">
+                                                <span class="text-sm font-medium text-gray-800">{{ comment.user.username }}</span>
+                                                <span class="text-xs text-gray-500">{{ comment.created_at|timesince }} ago</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700">{{ comment.content }}</p>
+                                        </div>
+                                        <div class="flex items-center space-x-4 mt-1 ml-3">
+                                            <button class="text-xs text-gray-500 hover:text-gray-700">Like</button>
+                                            <button class="text-xs text-gray-500 hover:text-gray-700">Reply</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                                {% if blog.comments.count > 3 %}
+                                <button class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                    View all {{ blog.comments.count }} comments
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </article>
-
-                <!-- Post 2 -->
-                <article class="post-card bg-white rounded-xl overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
-                         alt="Post cover" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm text-gray-500">May 10, 2023</span>
-                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">Lifestyle</span>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mt-2 mb-3">Digital Minimalism</h3>
-                        <p class="text-gray-600 mb-4">How to reclaim your attention in an age of distraction.</p>
-                        <div class="flex justify-between items-center">
-                            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
-                                Read Article <i class="fas fa-arrow-right ml-2"></i>
-                            </a>
-                            {% if request.user.is_authenticated %}
-                            <button class="text-gray-400 hover:text-indigo-600">
-                                <i class="far fa-bookmark"></i>
-                            </button>
-                            {% endif %}
-                        </div>
-                    </div>
-                </article>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            <div class="mt-12 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    <a href="#" class="px-3 py-1 rounded-md bg-white border border-gray-200 text-gray-500 hover:bg-gray-50">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% for p in total_pages %}
+                        <a href="http://127.0.0.1:8000/?page={{p}}" class="px-3 py-1 rounded-md bg-indigo-600 text-white">{{p}}</a>
+                    {% endfor %}
+                    
+                    <!-- <span class="px-3 py-1 text-gray-500">...</span> -->
+                    <!-- <a href="#" class="px-3 py-1 rounded-md bg-white border border-gray-200 text-gray-700 hover:bg-gray-50">8</a> -->
+                    <a href="#" class="px-3 py-1 rounded-md bg-white border border-gray-200 text-gray-500 hover:bg-gray-50">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </nav>
             </div>
         </div>
     </section>
 
     <!-- CTA for Auth -->
     {% if not request.user.is_authenticated %}
-    <section class="py-16 bg-white border-t border-gray-200">
-        <div class="max-w-3xl mx-auto px-4 text-center">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Join Our Community</h2>
-            <p class="text-gray-600 mb-6 max-w-xl mx-auto">Create an account to start writing or bookmark articles</p>
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <a href="{% url 'signup' %}" class="create-btn px-6 py-3 text-white rounded-md flex items-center justify-center">
-                    <i class="fas fa-user-plus mr-2"></i> Sign Up Now
+    <section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Ready to start writing?</h2>
+            <p class="text-lg text-indigo-100 mb-8 max-w-2xl mx-auto">Join thousands of writers sharing their stories and ideas with the world.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'signup' %}" class="px-8 py-4 bg-white text-indigo-600 rounded-lg flex items-center justify-center text-lg font-medium shadow-lg hover:bg-gray-50">
+                    <i class="fas fa-pen-fancy mr-2"></i> Start Writing Now
                 </a>
-                <a href="{% url 'user_login' %}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 flex items-center justify-center">
+                <a href="{% url 'user_login' %}" class="px-8 py-4 border border-white/30 text-white rounded-lg hover:bg-white/10 flex items-center justify-center text-lg font-medium">
                     <i class="fas fa-sign-in-alt mr-2"></i> Login
                 </a>
             </div>
@@ -187,24 +289,89 @@
     {% endif %}
 
     <!-- Footer -->
-    <footer class="bg-white py-8 border-t border-gray-200">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <a href="{% url 'my-blogs' %}" class="text-2xl font-medium">
-                        <span class="gradient-text">Modern</span>Blog
+    <footer class="bg-white py-12 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="{% url 'my-blogs' %}" class="text-2xl font-bold flex items-center">
+                        <span class="gradient-text">Modern</span><span class="text-gray-800">Blog</span>
                     </a>
+                    <p class="mt-4 text-gray-500 text-sm">A platform for writers and thinkers to share their ideas with the world.</p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-linkedin"></i></a>
+                    </div>
                 </div>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-500 hover:text-gray-900">Terms</a>
-                    <a href="#" class="text-gray-500 hover:text-gray-900">Privacy</a>
-                    <a href="#" class="text-gray-500 hover:text-gray-900">Contact</a>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Explore</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Popular Posts</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Recent Posts</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Top Writers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Categories</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">About Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Careers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Support</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Help Center</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Community</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Status</a></li>
+                    </ul>
                 </div>
             </div>
-            <div class="mt-8 text-center text-gray-500 text-sm">
+            <div class="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
                 <p>© 2023 ModernBlog. All rights reserved.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        // Toggle comment sections
+        document.querySelectorAll('.comment-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const blogId = this.getAttribute('data-blog-id');
+                const commentSection = document.getElementById(`comments-${blogId}`);
+                commentSection.classList.toggle('active');
+            });
+        });
+        
+        // Like functionality
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const blogId = this.getAttribute('data-blog-id');
+                const heartIcon = this.querySelector('i');
+                
+                // Toggle liked state
+                this.classList.toggle('liked');
+                heartIcon.classList.toggle('far');
+                heartIcon.classList.toggle('fas');
+                
+                // Update like count
+                const likeCount = this.querySelector('span');
+                const currentCount = parseInt(likeCount.textContent);
+                likeCount.textContent = this.classList.contains('liked') ? currentCount + 1 : currentCount - 1;
+                
+                // In a real app, you would send an AJAX request here to update the like in the database
+                // fetch(`/blogs/${blogId}/like/`, { method: 'POST' })
+                //     .then(response => response.json())
+                //     .then(data => {
+                //         likeCount.textContent = data.likes_count;
+                //     });
+            });
+        });
+    </script>
 </body>
 </html>
