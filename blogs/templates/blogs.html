@@ -92,7 +92,7 @@
                                 <span class="hidden md:inline text-gray-700 font-medium">{{request.user.username}}</span>
                             </div>
                             <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden group-hover:block border border-gray-100">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
+                                <a href="{% url 'dashboard'%}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
                                 <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
                             </div>
@@ -173,7 +173,7 @@
                         <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">{{ blog.title }}</h3>
                         <p class="text-gray-600 mb-4 line-clamp-3">{{ blog.content|truncatewords:30 }}</p>
                         <div class="flex justify-between items-center">
-                            <a href="{% url 'blog_detail' %}?slug={{blog.slug}}" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center text-sm">
+                            <a href="{% url 'blog_detail' slug=blog.slug %}" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center text-sm">
                                 Read More <i class="fas fa-arrow-right ml-2 text-xs"></i>
                             </a>
                             <div class="flex items-center space-x-3">

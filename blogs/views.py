@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from account.role_check_decorator_authorization import role_required
 from .models import Blogs
+from comment.models import Comment
 from django.core.paginator import Paginator
 
 # Create your views here.
@@ -16,10 +17,6 @@ def my_blogs(request):
     # print(paginator.__dict__)
 
     page_obj = paginator.get_page(page_number)
-
-    # for blog in page_obj:
-    #     print(blog)
-
 
     context = {
         "title": "Blog title",
@@ -75,13 +72,7 @@ def create_blog(request):
             return render(request, "create_blog.html", context)
             
     else:
-        # GET request - show empty form
-        # context = {
-        #     "title": "Create New Blog",
-        #     "user": request.user
-        # }
-        # return render(request, "create_blog.html", context)
-
+        
         blogs = Blogs.objects.filter(author=request.user)  # shows only logged-in user's blogs
     context = {
         "title": "My Blogs",
@@ -91,45 +82,22 @@ def create_blog(request):
     return render(request, "create_blog.html", context)
 
 
-# @role_required(["author"])
-# def create_blog(request):
-#     if request.method == "POST":
-#         title = request.POST['title']
-#         slug = request.Post['slug']
-#         content = request.POST['content']
-#         cover_image = request.POST['cover_image'] 
-#         author = request.POST['author']
-#         # created_at = request.POST['created_at']
-#         # updated_at = request.POST['updated_at']
-#         status = request.POST['status']
-#         tags = request.POST['tags']
-#         created_at = request.POST['created_at']
-#         updated_at = request.POST['updated_at']
-#         Blogs.objects.create(title=title,slug="slug",content="content",cover_image="cover_image",author="author",status ="status",tags="tags",created_at="created_at",updated_at="updated_at")
-
-
-#         context = {"title":"Blog title","user":request.user}
-#         return render(request,"create_blog.html",context)
-#         # return redirect back with saved successsfully message
-#     else:
-#         context = {"title":"Blog title","user":request.user}
-#         return render(request,"create_blog.html",context)
-
-def blog_detail(request):
-    blog_slug = request.GET.get('slug')
-    print(blog_slug," blog slug")
-
-    blog_object = Blogs.objects.get(slug=blog_slug) # Optional: order by newest
-
-    # for blog in page_obj:
-    #     print(blog)
-
+def blog_detail(request, slug): # Receive slug as a path parameter
+    blog_object = get_object_or_404(Blogs, slug=slug, status='published') # Use get_object_or_404 for safety
+    comments = Comment.objects.filter(blog=blog_object, approved=True).order_by('-created_at') # Fetch approved comments
 
     context = {
-        "title": "Blog title",
+        "title": blog_object.title, # Use the actual blog title
         "user": request.user,
-        "blog":blog_object,
-      
+        "blog": blog_object,
+        "comments": comments, # Include the comments in the context
     }
+    return render(request, "blog_detail.html", context) # Make sure the template name is correct
 
-    return render(request, "blog_detail.html", context)
+def dashboard(request):
+    return render(request,"dashboard_blog.html")
+
+# def blog_detail(request, slug): # Receive slug
+#     post = get_object_or_404(Blogs, slug=slug, status='published') # Fetch by slug
+#     # ... rest of your view logic ...
+#     return render(request, 'blog_detail.html', {'post': post})
