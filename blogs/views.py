@@ -1,9 +1,10 @@
 from django.shortcuts import render,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from account.role_check_decorator_authorization import role_required
-from .models import Blogs
+from .models import Blogs,BlogLike
 from comment.models import Comment
 from django.core.paginator import Paginator
+from django.http.response import HttpResponse
 
 # Create your views here.
 # @role_required(["admin","user"])
@@ -83,8 +84,8 @@ def create_blog(request):
 
 
 def blog_detail(request, slug): # Receive slug as a path parameter
-    blog_object = get_object_or_404(Blogs, slug=slug, status='published') # Use get_object_or_404 for safety
-    comments = Comment.objects.filter(blog=blog_object, approved=True).order_by('-created_at') # Fetch approved comments
+    blog_object = Blogs.objects.get(slug=slug, status='published') # Use get_object_or_404 for safety
+    comments = Comment.objects.filter(blog=blog_object).order_by('-created_at') # Fetch approved comments
 
     context = {
         "title": blog_object.title, # Use the actual blog title
@@ -96,6 +97,46 @@ def blog_detail(request, slug): # Receive slug as a path parameter
 
 def dashboard(request):
     return render(request,"dashboard_blog.html")
+
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse,JsonResponse
+from .models import Blogs, BlogLike  # Make sure to import your Blogs model
+
+
+@login_required
+def like_blog(request):
+    if request.method == "GET":
+        user = request.user
+        blog_id = request.GET.get('blog_id')
+
+        if blog_id:
+            try:
+                blog = get_object_or_404(Blogs, id=blog_id)
+
+                # Check if the user has already liked this blog
+                like, created = BlogLike.objects.get_or_create(user=user, blog=blog)
+
+                if not created:
+                    # If already liked, delete the like (for unliking)
+                    like.delete()
+                    liked = False
+                else:
+                    liked = True
+
+                # Return a JSON response indicating success and the like status
+                likes_count = BlogLike.objects.filter(blog=blog).count()
+                return JsonResponse({'status': 'success', 'liked': liked, 'blog_id': blog.id, 'likes_count': likes_count})
+
+            except ValueError:
+                return JsonResponse({'status': 'error', 'message': 'Invalid blog_id'}, status=400)
+            except Blogs.DoesNotExist:
+                return JsonResponse({'status': 'error', 'message': 'Blog not found'}, status=404)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Missing blog_id'}, status=400)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+    
 
 # def blog_detail(request, slug): # Receive slug
 #     post = get_object_or_404(Blogs, slug=slug, status='published') # Fetch by slug

@@ -37,12 +37,16 @@ from .models import Blogs
 
 @login_required
 def create_comment(request, blog_slug):
-    blog = get_object_or_404(Blogs, slug=blog_slug)  # Fetch Blog by slug
-
+    print(request.POST)
+    print(blog_slug," b m")
+    blog = Blogs.objects.get(slug=blog_slug)  # Fetch Blog by slug
+    print(blog, " blog vetyo")
     if request.method == 'POST':
+        print("in POST check")
         body = request.POST.get('body')
         if body:
-            Comment.objects.create(
+            print(" in body")
+            comment = Comment.objects.create(
                 blog=blog,
                 user=request.user,
                 # Remove redundant name and email if you have a User ForeignKey
@@ -50,7 +54,8 @@ def create_comment(request, blog_slug):
                 # email=request.user.email,
                 body=body,
                 approved=False  # Set approved to False for moderation
-            )
+            )  
+            print(comment, " create vayo ki vayena?")     
             return redirect('blog_detail', slug=blog.slug)  # Redirect to the correct blog detail URL name
         else:
             return render(request, 'create_comments.html', {'error': 'Comment body is required.', 'blog': blog})

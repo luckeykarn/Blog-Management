@@ -55,27 +55,6 @@ def user_logout(request):
 def profile(request):
    return render(request, 'profile.html')
 
-# def Profile_Update(request):
-#     if request.method == 'POST':
-#         form_username = request.POST["username"]
-#         form_email = request.POST["email"]
-#         form_password = request.POST["password"]
-#         print(form_username,form_email)
-#         user_object = request.user
-#         print(user_object)
-#         user_object.username = form_username
-#         user_object.email = form_email
-#         if len(form_password)>2:
-#             user_object.password = make_password(form_password)
-
-#         user_object.save()
-#         return HttpResponse("Profile Updated successfulley!!!")
-    
-#      # Handle GET request: render the form
-#     return render(request, "profile_update.html", {
-#         "user": request.user
-#     })
-
 def Profile_Update(request):
     if request.method == 'POST':
         form_username = request.POST["username"]
