@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "blogs",
     "taggit",
     'tinymce',
+    'adminpanel',
 ]
 
 MIDDLEWARE = [

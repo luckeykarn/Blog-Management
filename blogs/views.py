@@ -164,15 +164,3 @@ def blogs_by_tag(request, tag_slug):
         'query': f'Tag: {tag.name}'
     })
 
-@login_required
-def author_dashboard(request):
-    user = request.user
-    blog_count = Blogs.objects.filter(author=user).count()
-    comment_count = Comment.objects.filter(blog__author=user).count()
-    recent_drafts = Blogs.objects.filter(author=user, status='draft').order_by('-created_at')[:5]
-
-    return render(request, 'author_dashboard.html', {
-        'blog_count': blog_count,
-        'comment_count': comment_count,
-        'recent_drafts': recent_drafts,
-    })

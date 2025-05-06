@@ -9,7 +9,7 @@ urlpatterns = [
     path('like-blog/', views.like_blog,name="like_blog"), 
     path('search_post/', views.search, name='search'), 
     path('tag/<slug:tag_slug>/', views.blogs_by_tag, name='blogs_by_tag'), # for tag filtering
-    path('author-dashboard/', views.author_dashboard, name='author_dashboard'),
+    
 ]
 
 
