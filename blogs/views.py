@@ -4,7 +4,9 @@ from account.role_check_decorator_authorization import role_required
 from .models import Blogs,BlogLike
 from comment.models import Comment
 from django.core.paginator import Paginator
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse,JsonResponse
+from django.db.models import Q #this is imported for search function
+from taggit.models import Tag # for tag 
 
 # Create your views here.
 # @role_required(["admin","user"])
@@ -95,13 +97,8 @@ def blog_detail(request, slug): # Receive slug as a path parameter
     }
     return render(request, "blog_detail.html", context) # Make sure the template name is correct
 
-def dashboard(request):
-    return render(request,"dashboard_blog.html")
-
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse,JsonResponse
-from .models import Blogs, BlogLike  # Make sure to import your Blogs model
+# def dashboard(request):
+#     return render(request,"dashboard_blog.html")
 
 
 @login_required
@@ -137,8 +134,45 @@ def like_blog(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
     
+# search blog by title,content and tag
+def search(request):
+    if request.method == "GET":
+        query = request.GET.get('q')
+        results = Blogs.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct() if query else []
 
-# def blog_detail(request, slug): # Receive slug
-#     post = get_object_or_404(Blogs, slug=slug, status='published') # Fetch by slug
-#     # ... rest of your view logic ...
-#     return render(request, 'blog_detail.html', {'post': post})
+        error_message = ""
+        if query and not results:
+            error_message = f'No results found for "{query}".'
+
+        return render(request, 'blogs.html', {
+            'blogs': results,
+            'query': query,
+            'error_message': error_message
+        })
+# It shows tag
+def blogs_by_tag(request, tag_slug):
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    blogs = Blogs.objects.filter(tags__in=[tag], status='published').distinct()
+    
+    return render(request, 'blogs.html', {
+        'blogs': blogs,
+        'tag': tag,
+        'query': f'Tag: {tag.name}'
+    })
+
+@login_required
+def author_dashboard(request):
+    user = request.user
+    blog_count = Blogs.objects.filter(author=user).count()
+    comment_count = Comment.objects.filter(blog__author=user).count()
+    recent_drafts = Blogs.objects.filter(author=user, status='draft').order_by('-created_at')[:5]
+
+    return render(request, 'author_dashboard.html', {
+        'blog_count': blog_count,
+        'comment_count': comment_count,
+        'recent_drafts': recent_drafts,
+    })
