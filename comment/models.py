@@ -5,7 +5,7 @@ from account.models import CustomUser
 # Create your models here.
 class Comment(models.Model):
     blog = models.ForeignKey(Blogs, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='user_comments')
     # name = models.CharField(max_length=100) #hide because user relation already present, in user model there is already name and email
     # email = models.EmailField()
     body = models.TextField()

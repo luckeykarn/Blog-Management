@@ -13,9 +13,11 @@ from taggit.models import Tag # for tag
 # @login_required
 def my_blogs(request):
     page_number = request.GET.get('page')
-    blog_list = Blogs.objects.all()  # Optional: order by newest
-
-    paginator = Paginator(blog_list, 2)  # 2 blogs per page
+    # print(request.user),Blogs.objects.all().first().author,"********************")
+    # blog_list = Blogs.objects.all().filter(author = request.user).order_by('-id')  # Optional: order by newest
+    blog_list = Blogs.objects.all().order_by('-id')
+    
+    paginator = Paginator(blog_list, 10)  # 2 blogs per page
     # print(paginator.num_pages) #this give number of pages
     # print(paginator.__dict__)
 

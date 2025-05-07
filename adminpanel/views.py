@@ -7,16 +7,100 @@ from django.core.paginator import Paginator
 from django.http.response import HttpResponse,JsonResponse
 from django.db.models import Q #this is imported for search function
 from taggit.models import Tag # for tag 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.utils.text import slugify
+from adminpanel.models import Category
+
 
 @login_required
 def author_dashboard(request):
-    user = request.user
-    blog_count = Blogs.objects.filter(author=user).count()
-    comment_count = Comment.objects.filter(blog__author=user).count()
-    recent_drafts = Blogs.objects.filter(author=user, status='draft').order_by('-created_at')[:5]
+    # Get the selected status from the dropdown (default: published)
+    selected_status = request.GET.get('status', 'published')
 
-    return render(request, 'author_dashboard.html', {
-        'blog_count': blog_count,
-        'comment_count': comment_count,
-        'recent_drafts': recent_drafts,
-    })
+    # Filter blogs based on current user and selected status
+    blogs = Blogs.objects.filter(
+        author=request.user, 
+        status=selected_status
+    ).order_by('-created_at')
+
+    # Pass data to the template
+    context = {
+        'blogs': blogs,
+        'selected_status': selected_status,
+    }
+    return render(request, 'author_dashboard.html', context)
+
+
+def categories(request):
+    return render(request, 'categories.html')
+    
+
+
+@login_required
+def author_blog(request):
+    
+    # Get all posts for the current user
+    all_blogs = Blogs.objects.filter(author=request.user)
+
+    # Search
+    query = request.GET.get('query', '')
+    if query:
+        all_blogs = all_blogs.filter(Q(title__icontains=query) | Q(category__name__icontains = query) )
+
+    # Filter by category
+    category_filter = request.GET.get('category', '')
+    if category_filter:
+        all_blogs = all_blogs.filter(category__iexact=category_filter)
+
+    # Filter by status
+    status_filter = request.GET.get('status', '')
+    if status_filter and status_filter in ['published', 'draft', 'pending', 'archived']:
+        all_blogs = all_blogs.filter(status=status_filter)
+
+    # Order the posts
+    all_blogs = all_blogs.order_by('-created_at')
+
+    # Pagination
+    paginator = Paginator(all_blogs, 10)  # 10 posts per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Get unique categories for the dropdown
+    categories = Category.objects.all()
+
+    context = {
+        'page_obj': page_obj,  # Use 'page_obj' to be consistent with class-based view
+        'query': query,
+        'status_filter': status_filter,
+        'category_filter': category_filter,
+        'categories': categories,
+    }
+
+    return render(request, 'author_blogs.html', context)
+
+
+    # query = request.GET.get('query', '')
+    # status = request.GET.get('status', '')
+
+    # posts = Blogs.objects.filter(author=request.user)
+
+    # if query:
+    #     posts = posts.filter(title__icontains=query)
+    
+    # if status:
+    #     posts = posts.filter(status=status)
+
+    # return render(request, 'author_blogs.html', {
+    #     'posts': posts,
+    #     'query': query,
+    #     'status': status,
+    # })
+
+
+def setting(request):
+    return render(request, 'setting.html')
+
+
+
+   

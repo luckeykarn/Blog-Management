@@ -353,27 +353,27 @@
         <div class="logo">BlogHub</div>
         
         <nav class="nav-menu">
-            <a href="#" class="nav-item active">
+            <a href="{% url 'author_dashboard' %}" class="nav-item active">
                 <i class="fas fa-tachometer-alt"></i>
                 Dashboard
             </a>
-            <a href="#" class="nav-item">
+            <a href="{% url 'author_blog' %}" class="nav-item">
                 <i class="fas fa-pen"></i>
                 Posts
             </a>
-            <a href="#" class="nav-item">
+            <a href="{% url 'categories' %}" class="nav-item">
                 <i class="fas fa-list"></i>
                 Categories
             </a>
-            <a href="#" class="nav-item">
+            <!-- <a href="#" class="nav-item">
                 <i class="fas fa-chart-bar"></i>
                 Analytics
             </a>
             <a href="#" class="nav-item">
                 <i class="fas fa-comments"></i>
                 Comments
-            </a>
-            <a href="#" class="nav-item">
+            </a> -->
+            <a href="{% url 'setting' %}" class="nav-item">
                 <i class="fas fa-cog"></i>
                 Settings
             </a>
@@ -384,8 +384,8 @@
                 <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar">
             </div>
             <div class="user-info">
-                <div class="user-name">Jane Doe</div>
-                <div class="user-role">Author</div>
+                <div class="user-name">{{ request.user.username }}</div>
+                <div class="user-role">{{ request.user.role }}</div>
             </div>
             <button class="logout-btn" title="Logout">
                 <i class="fas fa-sign-out-alt"></i>
@@ -397,7 +397,7 @@
     <main class="main-content">
         <header class="header">
             <h1 class="page-title">Dashboard</h1>
-            <a href="add_blog.html" class="btn btn-primary">
+            <a href="{% url 'postblog' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> New Post
             </a>
         </header>
@@ -409,10 +409,12 @@
                 <div class="stat-header">
                     <i class="fas fa-file-alt stat-icon"></i>
                     <h3>Total Posts</h3>
+                    {% if request.user.is_authenticated %}
                 </div>
-                <div class="value">42</div>
+                <div class="value">({{user.posts.count}})</div>
                 <div class="trend up">
                     <i class="fas fa-arrow-up"></i> 12% from last month
+                    {% endif %}
                 </div>
             </div>
             
@@ -422,7 +424,7 @@
                     <i class="fas fa-check-circle stat-icon"></i>
                     <h3>Published Posts</h3>
                 </div>
-                <div class="value">36</div>
+                <div class="value">6</div>
                 <div class="trend up">
                     <i class="fas fa-arrow-up"></i> 8% from last month
                 </div>
@@ -434,7 +436,7 @@
                     <i class="fas fa-comments stat-icon"></i>
                     <h3>Total Comments</h3>
                 </div>
-                <div class="value">284</div>
+                <div class="value">({{user.user_comments.count}})</div>
                 <div class="trend up">
                     <i class="fas fa-arrow-up"></i> 5% from last month
                 </div>
@@ -446,7 +448,8 @@
                     <i class="fas fa-heart stat-icon"></i>
                     <h3>Total Likes</h3>
                 </div>
-                <div class="value">1.2K</div>
+                <div class="value">({{user.blog_like.count}})
+                </div>
                 <div class="trend down">
                     <i class="fas fa-arrow-down"></i> 3% from last month
                 </div>
@@ -487,12 +490,12 @@
             <div class="section-header">
                 <h3 class="section-title">Recent Posts</h3>
                 <div>
-                    <select>
-                        <option>All Status</option>
-                        <option>Published</option>
-                        <option selected>Unpublished</option>
-                        <option>Drafts</option>
-                    </select>
+                    <form method="get">
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="published" {% if selected_status == 'published' %}selected{% endif %}>Published</option>
+                            <option value="draft" {% if selected_status == 'draft' %}selected{% endif %}>Draft</option>
+                        </select>
+                    </form>
                 </div>
             </div>
             
@@ -509,87 +512,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="post-title">10 Tips for Better Content Writing</td>
-                        <td><span class="post-category">Writing</span></td>
-                        <td><span class="post-status status-published">Published</span></td>
-                        <td>24</td>
-                        <td>156</td>
-                        <td>May 2, 2023</td>
-                        <td>
-                            <button class="action-btn" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="post-title">The Future of AI in Blogging</td>
-                        <td><span class="post-category">Technology</span></td>
-                        <td><span class="post-status status-draft">Draft</span></td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>Apr 28, 2023</td>
-                        <td>
-                            <button class="action-btn" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="post-title">SEO Best Practices for 2023</td>
-                        <td><span class="post-category">Marketing</span></td>
-                        <td><span class="post-status status-published">Published</span></td>
-                        <td>18</td>
-                        <td>92</td>
-                        <td>Apr 22, 2023</td>
-                        <td>
-                            <button class="action-btn" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="post-title">How to Build an Email List</td>
-                        <td><span class="post-category">Marketing</span></td>
-                        <td><span class="post-status status-draft">Draft</span></td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>Apr 15, 2023</td>
-                        <td>
-                            <button class="action-btn" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="post-title">Content Calendar Template</td>
-                        <td><span class="post-category">Productivity</span></td>
-                        <td><span class="post-status status-published">Published</span></td>
-                        <td>7</td>
-                        <td>64</td>
-                        <td>Apr 10, 2023</td>
-                        <td>
-                            <button class="action-btn" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    {% if blogs %}
+                        {% for blog in blogs %}
+                            <tr>
+                                <td class="post-title">{{ blog.title }}</td>
+                                <td>
+                                    {% if blog.category %}
+                                        <span class="post-category">{{ blog.category.name }}</span>
+                                    {% else %}
+                                        <span class="post-category">Uncategorized</span>
+                                    {% endif %}
+                                </td>
+                                <td><span class="post-status status-{{ blog.status }}">{{ blog.get_status_display }}</span></td>
+                                <td>{{ blog.comments.count }}</td>
+                                <td>{{ blog.blog_like.count }}</td>
+                                <td>{{ blog.created_at|date:"F j, Y" }}</td>
+                                <td>
+                                    <button class="action-btn" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7">No recent blogs found.</td>
+                        </tr>
+                    {% endif %}
                 </tbody>
+                
             </table>
         </div>
     </main>
