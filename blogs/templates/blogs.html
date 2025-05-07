@@ -102,17 +102,19 @@
     
                 <div class="flex items-center space-x-3 ml-8">
                     {% if request.user.is_authenticated %}
-                        <div class="relative group">
-                            <div class="flex items-center space-x-2">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full cursor-pointer object-cover">
-                                <span class="hidden md:inline text-gray-700 font-medium">{{ request.user.username }}</span>
-                            </div>
-                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden group-hover:block border border-gray-100">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
-                                <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
-                            </div>
+                    <div class="relative" id="profileDropdown">
+                        <div class="flex items-center space-x-2 cursor-pointer" id="dropdownToggle">
+                          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                          <span class="hidden md:inline text-gray-700 font-medium">{{ request.user.username }}</span>
                         </div>
+                      
+                        <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden border border-gray-100">
+                          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
+                          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
+                          <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
+                        </div>
+                      </div>
+
                     {% else %}
                         <a href="{% url 'user_login' %}" class="auth-btn px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">Login</a>
                         <a href="{% url 'signup' %}" class="auth-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium">Sign Up</a>
@@ -416,5 +418,22 @@
         });
       }
    </script>
+   <script>
+    const toggleBtn = document.getElementById('dropdownToggle');
+    const dropdown = document.getElementById('dropdownMenu');
+  
+    // Show/hide dropdown on click
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // prevent click from bubbling up
+      dropdown.classList.toggle('hidden');
+    });
+  
+    // Hide dropdown if clicked outside
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('profileDropdown').contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+  </script>
 </body>
 </html>

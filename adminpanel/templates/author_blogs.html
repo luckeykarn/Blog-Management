@@ -552,9 +552,9 @@
     <main class="main-content">
         <header class="header">
             <h1 class="page-title">Manage Posts</h1>
-            <button class="btn btn-primary" id="addPostBtn">
+            <a href="https://www.google.com" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Post
-            </button>
+            </a>
         </header>
         <form method="get" class="search-filter">
             <div class="action-bar">
@@ -668,137 +668,11 @@
             </div>
         </div>
     </main>
-    
-    <!-- Add/Edit Post Modal -->
-    <div class="modal" id="postModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Add New Post</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="postForm">
-                    <div class="form-group">
-                        <label for="postTitle">Post Title</label>
-                        <input type="text" id="postTitle" class="form-control" placeholder="Enter post title">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postSlug">Post Slug</label>
-                        <input type="text" id="postSlug" class="form-control" placeholder="post-url-slug">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postContent">Content</label>
-                        <textarea id="postContent" class="form-control" placeholder="Write your post content here..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postExcerpt">Excerpt</label>
-                        <textarea id="postExcerpt" class="form-control" placeholder="Short description of your post"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postCategory">Category</label>
-                        <select id="postCategory" class="form-select">
-                            <option value="">Select a category</option>
-                            <option value="technology">Technology</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="writing">Writing</option>
-                            <option value="productivity">Productivity</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postTags">Tags</label>
-                        <input type="text" id="postTags" class="form-control" placeholder="Add tags separated by commas">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postStatus">Status</label>
-                        <select id="postStatus" class="form-select">
-                            <option value="draft">Draft</option>
-                            <option value="published">Published</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="postThumbnail">Featured Image</label>
-                        <input type="file" id="postThumbnail" class="form-control">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline">Cancel</button>
-                <button class="btn btn-primary">Save Draft</button>
-                <button class="btn btn-success">Publish</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Delete Confirmation Modal -->
-    <div class="modal" id="deleteModal">
-        <div class="modal-content" style="max-width: 400px;">
-            <div class="modal-header">
-                <h3 class="modal-title">Confirm Delete</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this post? This action cannot be undone.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline">Cancel</button>
-                <button class="btn btn-danger">Delete</button>
-            </div>
-        </div>
-    </div>
+
     
     <script>
-        // Modal functionality
-        const addPostBtn = document.getElementById('addPostBtn');
-        const postModal = document.getElementById('postModal');
-        const deleteModal = document.getElementById('deleteModal');
-        const modalCloseBtns = document.querySelectorAll('.modal-close');
-        
-        // Open Add Post Modal
-        addPostBtn.addEventListener('click', () => {
-            postModal.style.display = 'flex';
-        });
-        
-        // Close Modals
-        modalCloseBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                postModal.style.display = 'none';
-                deleteModal.style.display = 'none';
-            });
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === postModal) {
-                postModal.style.display = 'none';
-            }
-            if (e.target === deleteModal) {
-                deleteModal.style.display = 'none';
-            }
-        });
-        
-        // Delete button functionality (example)
-        document.querySelectorAll('.action-btns .fa-trash').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                deleteModal.style.display = 'flex';
-            });
-        });
-        
-        // Generate slug from title
-        document.getElementById('postTitle').addEventListener('input', function() {
-            const slug = this.value.toLowerCase()
-                .replace(/[^\w\s-]/g, '') // Remove non-word chars
-                .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with -
-                .replace(/^-+|-+$/g, ''); // Trim - from start and end
-            document.getElementById('postSlug').value = slug;
-        });
+      
+
     </script>
     <script>
         function CategoryFilter(){
