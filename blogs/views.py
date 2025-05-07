@@ -122,6 +122,8 @@ def like_blog(request):
                     liked = False
                 else:
                     liked = True
+                
+                print(liked," liked *********")
 
                 # Return a JSON response indicating success and the like status
                 likes_count = BlogLike.objects.filter(blog=blog).count()
