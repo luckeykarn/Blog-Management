@@ -78,17 +78,17 @@ def create_blog(request):
             
     else:
         
-        blogs = Blogs.objects.filter(author=request.user)  # shows only logged-in user's blogs
-    context = {
-        "title": "My Blogs",
-        "user": request.user,
-        "blogs": blogs
-    }
-    return render(request, "create_blog.html", context)
+        blogs = Blogs.objects.filter(author=request.user,status='published')  # shows only logged-in user's blogs
+        context = {
+            "title": "My Blogs",
+            "user": request.user,
+            "blogs": blogs
+        }
+        return render(request, "create_blog.html", context)
 
 
 def blog_detail(request, slug): # Receive slug as a path parameter
-    blog_object = Blogs.objects.get(slug=slug, status='published') # Use get_object_or_404 for safety
+    blog_object = Blogs.objects.get(slug=slug) # Use get_object_or_404 for safety
     comments = Comment.objects.filter(blog=blog_object).order_by('-created_at') # Fetch approved comments
 
     context = {

@@ -102,5 +102,50 @@ def setting(request):
     return render(request, 'setting.html')
 
 
+def add_post(request):
+    if request.method == "POST":
+        try:
+            # Get data from POST request
+            title = request.POST.get('title')
+            slug = request.POST.get('slug')
+            content = request.POST.get('content')
+            cover_image = request.FILES.get('cover_image')  # Changed to FILES for file uploads
+            author = request.user  # Assuming author is the logged-in user
+            status = request.POST.get('status')
+            tags = request.POST.get('tags')
+            
+            # Create blog post
+            blog = Blogs.objects.create(
+                title=title,
+                slug=slug,
+                content=content,
+                cover_image=cover_image,
+                author=author,
+                status=status,
+                tags=tags
+                # created_at and updated_at will be auto-set if auto_now_add and auto_now are True in model
+            )
+            print("created",blog)
+            messages.success(request, 'Blog created successfully!')
+            return redirect('author_blog')  # Or another appropriate redirect
+            
+        except Exception as e:
+            messages.error(request, f'Error creating blog: {str(e)}')
+            # Return to form with existing data if you want to implement that
+            context = {
+                "title": request.POST.get('title'),
+                "content": request.POST.get('content'),
+                "slug": request.POST.get('slug'),
+                "user": request.user,
+                "error": str(e)
+            }
+            return render(request, "create_blog.html", context)
+            
+    elif request.method == "GET":
+        categories = Category.objects.all()
+        context = {
+                    "categories":categories,
+            }
+        return render(request, 'add-post.html',context)
 
    

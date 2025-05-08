@@ -550,9 +550,25 @@
     
     <!-- Main Content -->
     <main class="main-content">
+        {% if messages %}
+        <div style="margin-bottom: 1rem;">
+            {% for message in messages %}
+                <div style="
+                    padding: 1rem;
+                    border-radius: 0.25rem;
+                    margin-bottom: 1rem;
+                    color: white;
+                    background-color: {% if message.tags == 'success' %}#10b981{% elif message.tags == 'error' %}#ef4444{% elif message.tags == 'warning' %}#f59e0b{% else %}#3b82f6{% endif %};
+                ">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
         <header class="header">
             <h1 class="page-title">Manage Posts</h1>
-            <a href="https://www.google.com" class="btn btn-primary">
+            <a href="{%url 'add_post' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Post
             </a>
         </header>
@@ -611,11 +627,15 @@
                     <tr>
                         <td><input type="checkbox" name="selected_blogs" value="{{ blog.id }}"></td>
                         <td class="post-title">
-                            {% if blog.thumbnail %}  {# Added conditional for thumbnail #}
-                            <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }} thumbnail">
+                         
+                            <!-- <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }} thumbnail"> -->
+                            {% if blog.cover_image %}
+                                <img src="{{ blog.cover_image.url }}" alt="Cover Image">
                             {% else %}
-                            <img src="#" alt="No thumbnail">
+                                <img src="https://missionhimalayatreks.com/wp-content/uploads/2024/02/Nepal-mountain-villages-860x483.webp" alt="Default Cover Image">
                             {% endif %}
+
+                        
                             <span>{{ blog.title|truncatechars:40 }}</span>  {# Added truncation for long titles #}
                         </td>
                         <td>

@@ -169,8 +169,13 @@
                 {% for blog in blogs %}
                 <article class="post-card bg-white rounded-xl overflow-hidden border border-gray-100">
                     <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
-                            alt="Post cover" class="w-full h-48 object-cover">
+                        <!-- <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                            alt="Post cover" class="w-full h-48 object-cover"> -->
+                            {% if blog.cover_image %}
+                            <img src="{{ blog.cover_image.url }}" alt="Cover Image">
+                        {% else %}
+                            <img src="https://missionhimalayatreks.com/wp-content/uploads/2024/02/Nepal-mountain-villages-860x483.webp" alt="Default Cover Image">
+                        {% endif %}
                         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
                             <div class="flex items-center">
                                 <img src="https://randomuser.me/api/portraits/men/{{ forloop.counter|add:10 }}.jpg" 

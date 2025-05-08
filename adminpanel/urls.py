@@ -6,7 +6,7 @@ urlpatterns = [
     path('categories/', views.categories, name='categories'),
     path('author-blog/', views.author_blog, name='author_blog'),
     path('setting/', views.setting, name='setting'),
-
+    path('add-post/', views.add_post, name='add_post'),
 ]
 
 

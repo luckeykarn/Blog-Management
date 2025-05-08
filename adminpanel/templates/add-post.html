@@ -341,35 +341,35 @@
     
     <!-- Main Content -->
     <main class="main-content">
+        {% if error_message %}
+            <p class="text-red-600 text-sm mt-2">{{ error_message }}</p>
+        {% endif %}
+
+
         <header class="header">
             <h1 class="page-title">Add New Post</h1>
-            <a href="{% url 'author_blog' %}" class="btn btn-outline">
+            <a href="{% url 'add_post' %}" class="btn btn-outline">
                 <i class="fas fa-arrow-left"></i> Back to Posts
             </a>
         </header>
         
         <div class="post-form-container">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" action="{% url 'add_post' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 
                 <div class="form-group">
-                    <label for="postTitle">Post Title</label>
+                    <label for="postTitle">Blog Title</label>
                     <input type="text" id="postTitle" name="title" class="form-control" placeholder="Enter post title" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="postSlug">Post Slug</label>
+                    <label for="postSlug">Blog Slug</label>
                     <input type="text" id="postSlug" name="slug" class="form-control" placeholder="post-url-slug" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="postContent">Content</label>
                     <textarea id="postContent" name="content" class="form-control" placeholder="Write your post content here..." required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="postExcerpt">Excerpt</label>
-                    <textarea id="postExcerpt" name="excerpt" class="form-control" placeholder="Short description of your post"></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -396,15 +396,15 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="postThumbnail">Featured Image</label>
-                    <input type="file" id="postThumbnail" name="thumbnail" class="form-control" accept="image/*">
+                    <label for="postThumbnail">Cover Image</label>
+                    <input type="file" name="cover_image" id="postThumbnail" name="thumbnail" class="form-control" accept="image/*">
                     <div class="thumbnail-preview" id="thumbnailPreview">
                         <span>No image selected</span>
                     </div>
                 </div>
                 
                 <div class="form-footer">
-                    <button type="button" class="btn btn-outline">Save Draft</button>
+                    <!-- <button type="button" class="btn btn-outline">Save Draft</button> -->
                     <button type="submit" class="btn btn-success">Publish</button>
                 </div>
             </form>
