@@ -50,7 +50,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return HttpResponse("You are loged out successfulley!!!")
+    return redirect('my-blogs')
 
 def profile(request):
    return render(request, 'profile.html')

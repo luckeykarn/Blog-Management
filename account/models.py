@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     role = models.CharField(choices=(('admin','Admin'),('author','Author'),('user','User')))
-    image = models.ImageField(upload_to="account")
+    profile_picture = models.ImageField(upload_to="account")
+    bio = models.TextField(blank=True)
     gender =  models.CharField(choices=(('male','Male'),('female','Female'),('others','Others')))
     USERNAME_FIELD = "email"
 

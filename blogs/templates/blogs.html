@@ -109,7 +109,7 @@
                         </div>
                       
                         <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden border border-gray-100">
-                          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
+                          <a href="{% url 'author_dashboard' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
                           <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
                           <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
                         </div>
@@ -201,14 +201,19 @@
                                 Read More <i class="fas fa-arrow-right ml-2 text-xs"></i>
                             </a>
                             <div class="flex items-center space-x-3">
-                                {% is_blog_liked_by_user request.user blog as liked %}
-                                    <button class="like-btn text-gray-400 hover:text-gray-600 {% if liked %}liked{% endif %} " data-blog-id="{{ blog.id }}">
-                                    <!-- <i id="{{blog.id}}" onclick="likeBlog(this)" class="far fa-heart"></i> -->
-                                  
-                                    <i id="{{ blog.id }}" onclick="likeBlog(this)" class="{% if liked %}fas{% else %}far{% endif %} fa-heart blog"></i>
+                                {% if request.user.is_authenticated %}
+                                    {% is_blog_liked_by_user request.user blog as liked %}
+                                {% else %}
+                                    {% with liked=False %}{% endwith %}
+                                {% endif %}
+                                
+                                <button class="like-btn text-gray-400 hover:text-gray-600 {% if liked %}liked{% endif %}" 
+                                        data-blog-id="{{ blog.id }}"
+                                        {% if not request.user.is_authenticated %}data-require-login="true"{% endif %}>
+                                    <i class="{% if liked %}fas{% else %}far{% endif %} fa-heart"></i>
                                     <span class="text-xs ml-1">{% get_blog_like_count blog %}</span>
-                                    
                                 </button>
+
                                 <button class="comment-toggle text-gray-400 hover:text-gray-600" data-blog-id="{{ blog.id }}">
                                     <i class="far fa-comment"></i>
                                     <span class="text-xs ml-1">{{ blog.comments.count }}</span>
@@ -408,7 +413,8 @@
         }
     </script> -->
 <script>
-    function likeBlog(element) {
+
+function likeBlog(element) {
         var blog_id = element.id;
         var url = `/like-blog/?blog_id=${blog_id}`;
       

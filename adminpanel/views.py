@@ -98,8 +98,8 @@ def author_blog(request):
     # })
 
 
-def setting(request):
-    return render(request, 'setting.html')
+# def setting(request):
+#     return render(request, 'setting.html')
 
 
 def add_post(request):
@@ -148,4 +148,59 @@ def add_post(request):
             }
         return render(request, 'add-post.html',context)
 
-   
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def profile_settings(request):
+    user = request.user
+    
+    if request.method == 'POST':
+        # Handle profile picture upload
+        if 'profile_picture' in request.FILES:
+            # Remove old profile picture if exists
+            if user.profile_picture:
+                user.profile_picture.delete()
+            user.profile_picture = request.FILES['profile_picture']
+        
+        # Update profile fields
+        user.first_name = request.POST.get('display_name', '').split()[0] if request.POST.get('display_name') else ''
+        user.last_name = ' '.join(request.POST.get('display_name', '').split()[1:]) if request.POST.get('display_name') else ''
+        user.bio = request.POST.get('bio', '')
+        user.gender = request.POST.get('gender')
+        
+        # Update email if changed
+        new_email = request.POST.get('email')
+        if new_email and new_email != user.email:
+            user.email = new_email
+        
+        # Handle notification preferences
+        user.notify_comments = 'notify_comments' in request.POST
+        user.notify_replies = 'notify_replies' in request.POST
+        user.notify_mentions = 'notify_mentions' in request.POST
+        user.notify_followers = 'notify_followers' in request.POST
+        user.push_comments = 'push_comments' in request.POST
+        user.push_replies = 'push_replies' in request.POST
+        
+        # Handle social media and sharing preferences
+        user.twitter_handle = request.POST.get('twitter', '')
+        user.facebook_url = request.POST.get('facebook', '')
+        user.instagram_handle = request.POST.get('instagram', '')
+        user.linkedin_url = request.POST.get('linkedin', '')
+        user.github_handle = request.POST.get('github', '')
+        user.share_twitter = 'share_twitter' in request.POST
+        user.share_facebook = 'share_facebook' in request.POST
+        user.share_linkedin = 'share_linkedin' in request.POST
+        
+        try:
+            user.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile_settings')
+        except Exception as e:
+            messages.error(request, f'Error updating profile: {str(e)}')
+    
+    context = {
+        'user': user,
+    }
+    return render(request, 'profile_settings.html', context)

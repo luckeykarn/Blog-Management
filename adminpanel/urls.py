@@ -5,7 +5,7 @@ urlpatterns = [
     path('', views.author_dashboard, name='author_dashboard'),
     path('categories/', views.categories, name='categories'),
     path('author-blog/', views.author_blog, name='author_blog'),
-    path('setting/', views.setting, name='setting'),
+    path('profile-setting/', views.profile_settings, name='profile_settings'),
     path('add-post/', views.add_post, name='add_post'),
 ]
 

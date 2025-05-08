@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Author Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #f9fafb;
+            --accent-color: #e5e7eb;
+            --text-color: #111827;
+            --light-text: #6b7280;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--light-text);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        .nav-item.active {
+            background-color: #eef2ff;
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+        
+        .nav-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            margin-right: 0.75rem;
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--light-text);
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Settings Specific Styles */
+        .settings-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--accent-color);
+        }
+        
+        .settings-tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--light-text);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .settings-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .settings-tab:hover:not(.active) {
+            color: var(--text-color);
+        }
+        
+        .settings-content {
+            padding: 2rem;
+        }
+        
+        .settings-pane {
+            display: none;
+        }
+        
+        .settings-pane.active {
+            display: block;
+        }
+        
+        .settings-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--accent-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            max-width: 600px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--accent-color);
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--accent-color);
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            background-color: white;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-check-input {
+            margin-right: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--text-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .avatar-upload {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            margin-right: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+        
+        .social-links .form-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .social-links .social-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+            border-radius: 0.25rem;
+            margin-right: 1rem;
+            color: var(--text-color);
+        }
+        
+        .danger-zone {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--accent-color);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+            
+            .logo, .nav-item span, .user-info {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 1rem 0;
+            }
+            
+            .nav-item i {
+                margin-right: 0;
+                font-size: 1.25rem;
+            }
+            
+            .user-profile {
+                justify-content: center;
+            }
+            
+            .user-avatar {
+                margin-right: 0;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 1rem;
+            }
+            
+            .settings-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 0.5rem;
+            }
+            
+            .settings-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">BlogHub</div>
+        
+        <nav class="nav-menu">
+            <a href="{% url 'author_dashboard' %}" class="nav-item">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'author_blog' %}" class="nav-item">
+                <i class="fas fa-pen"></i>
+                <span>Posts</span>
+            </a>
+            <a href="{% url 'categories' %}" class="nav-item">
+                <i class="fas fa-list"></i>
+                <span>Categories</span>
+            </a>
+            <a href="{% url 'profile_settings' %}" class="nav-item active">
+                <i class="fas fa-cog"></i>
+                <span>Profile Setting</span>
+            </a>
+        </nav>
+        
+        <div class="user-profile">
+            <div class="user-avatar">
+                {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" alt="User Avatar">
+                {% else %}
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Default Avatar">
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <div class="user-name">{{ request.user.username }}</div>
+                <div class="user-role">{{ request.user.role }}</div>
+            </div>
+            <button class="logout-btn" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <h1 class="page-title">Profile Settings</h1>
+        </header>
+        
+        <div class="settings-container">
+            <div class="settings-tabs">
+                <div class="settings-tab active" data-tab="profile">Profile</div>
+                <div class="settings-tab" data-tab="account">Account</div>
+                <div class="settings-tab" data-tab="notifications">Notifications</div>
+                <div class="settings-tab" data-tab="social">Social</div>
+            </div>
+
+            <div class="settings-content">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Profile Pane -->
+                    <div class="settings-pane active" id="profile-pane">
+                        <h3 class="settings-section-title">Profile Information</h3>
+                        
+                        <div class="avatar-upload">
+                            <div class="avatar-preview">
+                                {% if request.user.profile_picture %}
+                                <img src="{{ request.user.profile_picture.url }}" alt="Profile Photo" id="avatar-preview-img">
+                                {% else %}
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Default Profile" id="avatar-preview-img">
+                                {% endif %}
+                            </div>
+                            <div>
+                                <label for="profile_picture" class="btn btn-outline">
+                                    <i class="fas fa-upload"></i> Upload New Photo
+                                </label>
+                                <input type="file" id="profile_picture" name="profile_picture" class="file-input" accept="image/*">
+                                {% if request.user.profile_picture %}
+                                <button type="button" id="remove-photo" class="btn btn-outline">
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" class="form-control" value="{{ request.user.username }}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="display_name">Display Name</label>
+                            <input type="text" id="display_name" name="display_name" class="form-control" 
+                                   value="{{ request.user.get_full_name|default:request.user.username }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bio">Bio</label>
+                            <textarea id="bio" name="bio" class="form-control">{{ request.user.bio|default:"Hey, it's my Bio" }}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select name="gender" id="gender" class="form-select">
+                                <option value="">Select Gender</option>
+                                <option value="M" {% if request.user.gender == 'M' %}selected{% endif %}>Male</option>
+                                <option value="F" {% if request.user.gender == 'F' %}selected{% endif %}>Female</option>
+                                <option value="O" {% if request.user.gender == 'O' %}selected{% endif %}>Other</option>
+                                <option value="P" {% if request.user.gender == 'P' %}selected{% endif %}>Prefer not to say</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Profile
+                        </button>
+                    </div>
+                    
+                    <!-- Account Pane -->
+                    <div class="settings-pane" id="account-pane">
+                        <h3 class="settings-section-title">Account Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" class="form-control" value="jane.doe@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" class="form-control" value="janedoe">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" class="form-control">
+                        </div>
+                        
+                        <button class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Account
+                        </button>
+                        
+                        
+                        <!-- <div class="form-group">
+                            <label>Password</label>
+                            <a href="#" class="btn btn-outline">
+                                <i class="fas fa-key"></i> Change Password
+                            </a>
+                        </div> -->
+                        
+                        <div class="danger-zone">
+                            <h3 class="settings-section-title">Danger Zone</h3>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-outline" style="color: var(--danger-color); border-color: var(--danger-color);">
+                                    <i class="fas fa-sign-out-alt"></i> Logout All Devices
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-outline" style="color: var(--danger-color); border-color: var(--danger-color);">
+                                    <i class="fas fa-trash"></i> Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications Pane -->
+                    <div class="settings-pane" id="notifications-pane">
+                        <h3 class="settings-section-title">Notification Preferences</h3>
+                        
+                        <h4>Email Notifications</h4>
+                        <div class="form-check">
+                            <input type="checkbox" id="notify-comments" name="notify_comments" class="form-check-input" {% if request.user.notify_comments %}checked{% endif %}>
+                            <label for="notify-comments">New comments on my posts</label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="notify-replies" name="notify_replies" class="form-check-input" {% if request.user.notify_replies %}checked{% endif %}>
+                            <label for="notify-replies">Replies to my comments</label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="notify-mentions" name="notify_mentions" class="form-check-input" {% if request.user.notify_mentions %}checked{% endif %}>
+                            <label for="notify-mentions">Mentions in comments</label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="notify-followers" name="notify_followers" class="form-check-input" {% if request.user.notify_followers %}checked{% endif %}>
+                            <label for="notify-followers">New followers</label>
+                        </div>
+                        
+                        <h4 style="margin-top: 1.5rem;">Push Notifications</h4>
+                        <div class="form-check">
+                            <input type="checkbox" id="push-comments" name="push_comments" class="form-check-input" {% if request.user.push_comments %}checked{% endif %}>
+                            <label for="push-comments">New comments on my posts</label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="push-replies" name="push_replies" class="form-check-input" {% if request.user.push_replies %}checked{% endif %}>
+                            <label for="push-replies">Replies to my comments</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+                            <i class="fas fa-save"></i> Save Notification Settings
+                        </button>
+                    </div>
+                    
+                    <!-- Social Pane -->
+                    <div class="settings-pane" id="social-pane">
+                        <h3 class="settings-section-title">Social Media Integration</h3>
+                        
+                        <div class="social-links">
+                            <div class="form-group">
+                                <div class="social-icon">
+                                    <i class="fab fa-twitter"></i>
+                                </div>
+                                <input type="text" name="twitter" class="form-control" placeholder="Twitter username" value="{{ request.user.twitter_handle|default:'' }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="social-icon">
+                                    <i class="fab fa-facebook-f"></i>
+                                </div>
+                                <input type="text" name="facebook" class="form-control" placeholder="Facebook profile URL" value="{{ request.user.facebook_url|default:'' }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="social-icon">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                                <input type="text" name="instagram" class="form-control" placeholder="Instagram username" value="{{ request.user.instagram_handle|default:'' }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="social-icon">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </div>
+                                <input type="text" name="linkedin" class="form-control" placeholder="LinkedIn profile URL" value="{{ request.user.linkedin_url|default:'' }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="social-icon">
+                                    <i class="fab fa-github"></i>
+                                </div>
+                                <input type="text" name="github" class="form-control" placeholder="GitHub username" value="{{ request.user.github_handle|default:'' }}">
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin-top: 1.5rem;">Auto-Sharing Settings</h4>
+                        <div class="form-check">
+                            <input type="checkbox" id="share-twitter" name="share_twitter" class="form-check-input" {% if request.user.share_twitter %}checked{% endif %}>
+                            <label for="share-twitter">Auto-share new posts on Twitter</label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="share-facebook" name="share_facebook" class="form-check-input" {% if request.user.share_facebook %}checked{% endif %}>
+                            <label for="share-facebook">Auto-share new posts on Facebook</label>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="share-linkedin" name="share_linkedin" class="form-check-input" {% if request.user.share_linkedin %}checked{% endif %}>
+                            <label for="share-linkedin">Auto-share new posts on LinkedIn</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+                            <i class="fas fa-save"></i> Save Social Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabs = document.querySelectorAll('.settings-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all panes
+                    document.querySelectorAll('.settings-pane').forEach(pane => {
+                        pane.classList.remove('active');
+                    });
+                    
+                    // Show corresponding pane
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-pane`).classList.add('active');
+                });
+            });
+            
+            // Profile picture preview
+            const profilePictureInput = document.getElementById('profile_picture');
+            if (profilePictureInput) {
+                profilePictureInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            document.getElementById('avatar-preview-img').src = event.target.result;
+                        };
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
+            }
+            
+            // Remove profile picture
+            // const removePhotoBtn = document.getElementById('remove-photo');
+            // if (removePhotoBtn) {
+            //     removePhotoBtn.addEventListener('click', function() {
+            //         if (confirm('Are you sure you want to remove your profile picture?')) {
+            //             fetch('{% url "remove_profile_picture" %', {
+            //                 method: 'POST',
+            //                 headers: {
+            //                     'X-CSRFToken': '{{ csrf_token }}',
+            //                 },
+            //             }).then(response => {
+            //                 if (response.ok) {
+            //                     location.reload();
+            //                 }
+            //             });
+            //         }
+            //     });
+            // }
+            
+            // Form submission handling
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                // You can add form validation here if needed
+                // e.preventDefault(); // Uncomment to handle with AJAX
+            });
+        });
+    </script>
+</body>
+</html>

@@ -7,16 +7,23 @@ from django.core.paginator import Paginator
 from django.http.response import HttpResponse,JsonResponse
 from django.db.models import Q #this is imported for search function
 from taggit.models import Tag # for tag 
+from django.contrib.auth.models import AnonymousUser #for AnonymousUser
+
 
 # Create your views here.
 # @role_required(["admin","user"])
-# @login_required
+# @login_required(login_url='user_login')
 def my_blogs(request):
     page_number = request.GET.get('page')
     # print(request.user),Blogs.objects.all().first().author,"********************")
     # blog_list = Blogs.objects.all().filter(author = request.user).order_by('-id')  # Optional: order by newest
-    blog_list = Blogs.objects.all().order_by('-id')
-    
+    if request.user.is_authenticated:
+        # Show only logged-in user's blogs
+        blog_list = Blogs.objects.filter(author=request.user).order_by('-id')
+    else:
+         # For anonymous users, show only published blogs from any author
+        blog_list = Blogs.objects.filter(status='published').order_by('-id')
+
     paginator = Paginator(blog_list, 10)  # 2 blogs per page
     # print(paginator.num_pages) #this give number of pages
     # print(paginator.__dict__)
@@ -25,7 +32,7 @@ def my_blogs(request):
 
     context = {
         "title": "Blog title",
-        "user": request.user,
+        "user": request.user if request.user.is_authenticated else None,
         "blogs": page_obj,
         "total_pages":range(1,paginator.num_pages+1)
     }
