@@ -142,21 +142,21 @@
         </div>
     </section>
     {% else %}
-    <section class="py-8 bg-white">
+    <!-- <section class="py-8 bg-white">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
             <h2 class="text-2xl font-bold text-gray-800">Latest Articles</h2>
             <a href="{% url 'postblog' %}" class="create-btn px-6 py-3 text-white rounded-lg flex items-center font-medium">
                 <i class="fas fa-plus mr-2"></i> Create New Post
             </a>
         </div>
-    </section>
+    </section> -->
     {% endif %}
 
     <!-- Featured Posts -->
     <section class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold text-gray-900">Featured Articles</h2>
+                <h2 class="text-2xl font-bold text-gray-900">Today's Insights</h2>
                 {% if request.user.is_authenticated %}
                 <a href="{% url 'postblog' %}" class="create-btn px-4 py-2 text-white rounded-md text-sm flex items-center md:hidden font-medium">
                     <i class="fas fa-plus mr-1"></i> New Post

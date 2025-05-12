@@ -14,6 +14,9 @@ class Blogs(models.Model):
     STATUS_CHOICES = (
         ('draft', 'Draft'),
         ('published', 'Published'),
+        ('pending', 'Pending'),
+        ('archived', 'Archived'),
+
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 

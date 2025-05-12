@@ -84,4 +84,3 @@ def Profile_Update(request):
 def permission_error(request):
     # This view can only be accessed by Authors or Admins
     return render(request, 'permission_error.html')
-

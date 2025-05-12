@@ -17,14 +17,15 @@ def my_blogs(request):
     page_number = request.GET.get('page')
     # print(request.user),Blogs.objects.all().first().author,"********************")
     # blog_list = Blogs.objects.all().filter(author = request.user).order_by('-id')  # Optional: order by newest
+   
     if request.user.is_authenticated:
-        # Show only logged-in user's blogs
-        blog_list = Blogs.objects.filter(author=request.user).order_by('-id')
+        # Show all posts (published and unpublished) for logged-in users
+        blog_list = Blogs.objects.all().order_by('-id')  # All posts, regardless of status
     else:
-         # For anonymous users, show only published blogs from any author
-        blog_list = Blogs.objects.filter(status='published').order_by('-id')
+        # For anonymous users, show only published posts
+        blog_list = Blogs.objects.filter(status='published').order_by('-id')  # Published posts only
 
-    paginator = Paginator(blog_list, 10)  # 2 blogs per page
+    paginator = Paginator(blog_list, 6)  # 6 blogs per page
     # print(paginator.num_pages) #this give number of pages
     # print(paginator.__dict__)
 

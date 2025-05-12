@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Posts - Author Dashboard</title>
+{% extends "master.html" %}
+
+   
+  
+{% block style%}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -500,54 +499,9 @@
             }
         }
     </style>
-</head>
-<body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo">BlogHub</div>
-        
-        <nav class="nav-menu">
-            <a href="{% url 'author_dashboard' %}" class="nav-item">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{% url 'author_blog' %}" class="nav-item active">
-                <i class="fas fa-pen"></i>
-                <span>Posts</span>
-            </a>
-            <a href="{% url 'categories' %}" class="nav-item">
-                <i class="fas fa-list"></i>
-                <span>Categories</span>
-            </a>
-            <!-- <a href="analytics.html" class="nav-item">
-                <i class="fas fa-chart-bar"></i>
-                <span>Analytics</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-comments"></i>
-                <span>Comments</span>
-            </a> -->
-            <a href="{% url 'profile_settings' %}" class="nav-item">
-                <i class="fas fa-cog"></i>
-                <span>Profile Setting</span>
-            </a>
-        </nav>
-        {% if request.user.is_authenticated %}
-        <div class="user-profile">
-            <div class="user-avatar">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar">
-            </div>
-            <div class="user-info">
-                <div class="user-name">{{ request.user.username }}</div>
-                <div class="user-role">{{ request.user.role }}</div>
-            </div>
-            <button class="logout-btn" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-        {% endif %}
-    </aside>
-    
+{% endblock %}
+   
+ {% block body%}   
     <!-- Main Content -->
     <main class="main-content">
         {% if messages %}
@@ -572,37 +526,36 @@
                 <i class="fas fa-plus"></i> Add New Post
             </a>
         </header>
-        <form method="get" class="search-filter">
-            <div class="action-bar">
-                <div class="search-filter">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" name="query" placeholder="Search posts..." value="{{ query }}">
-                    </div>
-                    <select  onchange="CategoryFilter(this)" class="filter-select" name="category">
-                        <option value="">All Categories</option>
-                        {% for category in categories %}
-                            <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>
-                                {{ category|title }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <select class="filter-select" name="status">
-                        <option value="">All Status</option>
-                        <option value="published" {% if status_filter == "published" %}selected{% endif %}>Published</option>
-                        <option value="draft" {% if status_filter == "draft" %}selected{% endif %}>Draft</option>
-                        <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>Pending</option>
-                        <option value="archived" {% if status_filter == "archived" %}selected{% endif %}>Archived</option>
-                    </select>
-                </div>
+
+       <!-- Search and Filters Form -->
+       <form method="get" class="search-filter" id="filterForm">
+        <div class="action-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" name="query" placeholder="Search posts..." value="{{ query }}">
             </div>
-        </form>
-        
-            <div class="actions">
-                <button class="btn btn-outline">
+            <select class="filter-select" name="category" id="categorySelect">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>
+                        {{ category|title }}
+                    </option>
+                {% endfor %}
+            </select>
+            <select class="filter-select" name="status" id="statusSelect">
+                <option value="">All Status</option>
+                <option value="published" {% if status_filter == "published" %}selected{% endif %}>Published</option>
+                <option value="draft" {% if status_filter == "draft" %}selected{% endif %}>Draft</option>
+                <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>Pending</option>
+                <option value="archived" {% if status_filter == "archived" %}selected{% endif %}>Archived</option>
+            </select>
+        </div>
+    </form>
+            <div class="actions"> 
+                <!-- <button class="btn btn-outline">
                     <i class="fas fa-filter"></i> Filter
-                </button>
-                <button class="btn btn-outline">
+                </button>  -->
+                 <button class="btn btn-outline">
                     <i class="fas fa-download"></i> Export
                 </button>
             </div>
@@ -675,29 +628,67 @@
                 </tbody>
                 
             </table>
-            
-            <div class="pagination">
-                <div class="page-info">Showing 1 to 5 of 15 entries</div>
-                <div class="page-numbers">
-                    <div class="page-number"><i class="fas fa-chevron-left"></i></div>
-                    <div class="page-number active">1</div>
-                    <div class="page-number">2</div>
-                    <div class="page-number">3</div>
-                    <div class="page-number"><i class="fas fa-chevron-right"></i></div>
-                </div>
-            </div>
+
+<div class="pagination">
+    <div class="page-info">
+        Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+    </div>
+
+    <div class="page-numbers flex items-center space-x-2">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&query={{ query }}&category={{ category_filter }}&status={{ status_filter }}"
+               class="page-number"><i class="fas fa-chevron-left"></i></a>
+        {% else %}
+            <span class="page-number disabled"><i class="fas fa-chevron-left"></i></span>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <span class="page-number active">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}&query={{ query }}&category={{ category_filter }}&status={{ status_filter }}"
+                   class="page-number">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+             {% if page_obj.has_next %}
+                 <a href="?page={{ page_obj.next_page_number }}&query={{ query }}&category={{ category_filter }}&status={{ status_filter }}"
+                    class="page-number"><i class="fas fa-chevron-right"></i></a>
+             {% else %}
+                    <span class="page-number disabled"><i class="fas fa-chevron-right"></i></span>
+            {% endif %}
+        </div>
+        </div>
         </div>
     </main>
-
+  
+    <script>
+       document.addEventListener("DOMContentLoaded", function() {
+    const categorySelect = document.getElementById('categorySelect');
+    const statusSelect = document.getElementById('statusSelect');
     
-    <script>
-      
+    categorySelect.addEventListener('change', function() {
+        filterPosts();
+    });
 
-    </script>
-    <script>
-        function CategoryFilter(){
-            alert("chnged using function")
-        }
-    </script>
-</body>
-</html>
+    statusSelect.addEventListener('change', function() {
+        filterPosts();
+    });
+
+    function filterPosts() {
+        const category = categorySelect.value;
+        const status = statusSelect.value;
+        const queryString = new URLSearchParams({
+            category: category,
+            status: status,
+        }).toString();
+
+        // Update the form action and submit
+        const form = document.getElementById('filterForm');
+        form.action = `?${queryString}`;
+        form.submit(); // Submit the form with the selected filters
+    }
+});
+
+</script>
+{% endblock %}

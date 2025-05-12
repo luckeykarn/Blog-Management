@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Author Dashboard</title>
+
+{% extends "master.html" %}
+{% block style %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -346,53 +343,9 @@
             color: var(--danger-color);
         }
     </style>
-</head>
-<body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo">BlogHub</div>
-        
-        <nav class="nav-menu">
-            <a href="{% url 'author_dashboard' %}" class="nav-item active">
-                <i class="fas fa-tachometer-alt"></i>
-                Dashboard
-            </a>
-            <a href="{% url 'author_blog' %}" class="nav-item">
-                <i class="fas fa-pen"></i>
-                Posts
-            </a>
-            <a href="{% url 'categories' %}" class="nav-item">
-                <i class="fas fa-list"></i>
-                Categories
-            </a>
-            <!-- <a href="#" class="nav-item">
-                <i class="fas fa-chart-bar"></i>
-                Analytics
-            </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-comments"></i>
-                Comments
-            </a> -->
-            <a href="{% url 'profile_settings' %}" class="nav-item">
-                <i class="fas fa-cog"></i>
-                Profile Setting
-            </a>
-        </nav>
-        
-        <div class="user-profile">
-            <div class="user-avatar">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar">
-            </div>
-            <div class="user-info">
-                <div class="user-name">{{ request.user.username }}</div>
-                <div class="user-role">{{ request.user.role }}</div>
-            </div>
-            <button class="logout-btn" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    </aside>
-    
+{% endblock %}
+
+{% block body %}
     <!-- Main Content -->
     <main class="main-content">
         <header class="header">
@@ -424,7 +377,7 @@
                     <i class="fas fa-check-circle stat-icon"></i>
                     <h3>Published Posts</h3>
                 </div>
-                <div class="value">6</div>
+                <div class="value">({{ published_count }})</div>
                 <div class="trend up">
                     <i class="fas fa-arrow-up"></i> 8% from last month
                 </div>
@@ -620,5 +573,5 @@
             }
         });
     </script>
-</body>
-</html>
+
+{% endblock %}

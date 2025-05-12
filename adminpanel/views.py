@@ -11,30 +11,32 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.text import slugify
 from adminpanel.models import Category
+from django.http import Http404, JsonResponse
 
 
 @login_required
 def author_dashboard(request):
-    # Get the selected status from the dropdown (default: published)
-    selected_status = request.GET.get('status', 'published')
+    # Get filter status from query param, default = ''
+    selected_status = request.GET.get('status', '')
 
-    # Filter blogs based on current user and selected status
-    blogs = Blogs.objects.filter(
-        author=request.user, 
-        status=selected_status
-    ).order_by('-created_at')
+    # Start with all blogs by current user
+    blogs = Blogs.objects.filter(author=request.user).order_by('-created_at')
 
-    # Pass data to the template
+    # Apply status filter only if one is selected
+    if selected_status in ['published', 'draft', 'pending', 'archived']:
+        blogs = blogs.filter(status=selected_status)
+
+    # Optional: count published and draft posts
+    published_count = blogs.filter(status='published').count()
+    draft_count = blogs.filter(status='draft').count()
+
     context = {
         'blogs': blogs,
         'selected_status': selected_status,
+        'published_count': published_count,
+        'draft_count': draft_count,
     }
     return render(request, 'author_dashboard.html', context)
-
-
-def categories(request):
-    return render(request, 'categories.html')
-    
 
 
 @login_required
@@ -51,7 +53,7 @@ def author_blog(request):
     # Filter by category
     category_filter = request.GET.get('category', '')
     if category_filter:
-        all_blogs = all_blogs.filter(category__iexact=category_filter)
+        all_blogs = all_blogs.filter(category__name__iexact=category_filter)  # Filtering based on related Category model's name
 
     # Filter by status
     status_filter = request.GET.get('status', '')
@@ -62,7 +64,7 @@ def author_blog(request):
     all_blogs = all_blogs.order_by('-created_at')
 
     # Pagination
-    paginator = Paginator(all_blogs, 10)  # 10 posts per page
+    paginator = Paginator(all_blogs, 5)  # 5 posts per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -204,3 +206,102 @@ def profile_settings(request):
         'user': user,
     }
     return render(request, 'profile_settings.html', context)
+
+
+# @login_required
+# def published_post(request):
+
+#     # Only show published blogs for the logged-in user
+#     blog_list = Blogs.objects.filter(author=request.user, status='published').order_by('-id')
+
+#     context = {
+#         "title": "My Blogs",
+#         "user": request.user,
+#         "blogs": blog_list  # Pass the blog list to the template
+#     }
+
+#     return render(request, "author_dashboard.html", context)
+
+
+@login_required
+def categories(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+
+        if name:
+            if Category.objects.filter(name__iexact=name).exists():
+                messages.error(request, 'Category already exists.')
+            else:
+                Category.objects.create(name=name)
+                messages.success(request, 'Category added successfully.')
+                return redirect('categories')
+        else:
+            messages.error(request, 'Category name is required.')
+
+    categories = Category.objects.all()
+    return render(request, 'categories.html', {'categories': categories})
+
+
+@login_required
+def update_category(request):
+    if request.method == 'POST':
+        try:
+            cat_id = request.POST.get('id')
+            name = request.POST.get('name', '').strip()
+
+            if not cat_id:
+                return JsonResponse({'success': False, 'error': 'Category ID is required'}, status=400)
+            
+            if not name:
+                return JsonResponse({'success': False, 'error': 'Category name cannot be empty'}, status=400)
+
+            # Check if category exists
+            category = Category.objects.filter(id=cat_id).first()
+            if not category:
+                return JsonResponse({'success': False, 'error': 'Category not found'}, status=404)
+
+            # Check for duplicate names (case-insensitive, excluding current category)
+            if Category.objects.filter(name__iexact=name).exclude(id=cat_id).exists():
+                return JsonResponse({'success': False, 'error': 'A category with this name already exists'}, status=400)
+
+            # Update the category
+            category.name = name
+            category.save()
+            
+            return JsonResponse({'success': True})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+@login_required
+def delete_category(request):
+    if request.method != 'POST':
+        return JsonResponse({
+            'success': False,
+            'error': 'Only POST requests are allowed'
+        }, status=405)
+
+    cat_id = request.POST.get('id')
+    if not cat_id:
+        return JsonResponse({
+            'success': False,
+            'error': 'Category ID is required'
+        }, status=400)
+
+    try:
+        category = get_object_or_404(Category, id=cat_id)
+        category.delete()
+        return JsonResponse({'success': True})
+        
+    except Http404:
+        return JsonResponse({
+            'success': False,
+            'error': 'Category not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

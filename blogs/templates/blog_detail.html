@@ -404,6 +404,45 @@
     </footer>
 
     <script>
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const blogId = this.getAttribute('data-blog-id');
+            const heartIcon = this.querySelector('i');
+            const likeCount = this.querySelector('span');
+
+            // Send request to backend
+            fetch(`/like-blog/?blog_id=${blogId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Toggle icon and class
+                        if (data.liked) {
+                            this.classList.add('liked');
+                            heartIcon.classList.remove('far');
+                            heartIcon.classList.add('fas');
+                        } else {
+                            this.classList.remove('liked');
+                            heartIcon.classList.remove('fas');
+                            heartIcon.classList.add('far');
+                        }
+
+                        // Update like count
+                        likeCount.textContent = data.likes_count;
+                    } else {
+                        alert(data.message || "An error occurred.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error liking blog:', error);
+                });
+        });
+    });
+</script>
+
+
+    </script>
+
+    <!-- <script>
         // Like functionality
         document.querySelectorAll('.like-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -453,6 +492,6 @@
           console.error('Error liking blog:', error);
         });
       }
-   </script>
+   </script> -->
 </body>
 </html>
