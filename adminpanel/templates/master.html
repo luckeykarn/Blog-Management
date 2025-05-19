@@ -1,18 +1,21 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Author Dashboard</title>
-
+    <title>{% block title %}Default Title{% endblock %}</title>
 
     {% block style %}
+
     {% endblock %}
+
 </head>
 <body>
+
     <!-- Sidebar -->
     <aside class="sidebar">
-        <div class="logo">BlogHub</div>
+        <div class="logo">BlogWave</div>
         
         <nav class="nav-menu">
             <a href="{% url 'author_dashboard' %}" class="nav-item active">
@@ -41,23 +44,40 @@
             </a>
         </nav>
         
-        <div class="user-profile">
-            <div class="user-avatar">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar">
+            <!-- User Profile Section -->
+        <div class="bg-white shadow-sm rounded-lg p-4 flex items-center justify-between">
+    
+            <!-- User Profile with Clickable Image -->
+            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3">
+            <!-- Clickable Avatar that redirects to edit page -->
+                <a href="{% url 'profile_view' %}" class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" 
+                     alt="User Avatar" 
+                     class="w-10 h-10 rounded-full object-cover border-2 border-indigo-100 hover:border-indigo-300 transition">
+                </a>
+            
+                 <!-- User Info -->
+                <div>
+                     <div class="text-sm font-medium text-gray-800">{{ request.user.username }}</div>
+                     <div class="text-xs text-gray-500 capitalize">{{ request.user.role|default:"member" }}</div>
+                </div>
             </div>
-            <div class="user-info">
-                <div class="user-name">{{ request.user.username }}</div>
-                <div class="user-role">{{ request.user.role }}</div>
-            </div>
-            <button class="logout-btn" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
+        
+        <!-- Logout Button -->
+        <a href="{% url 'userlogout' %}" 
+           class="text-gray-500 hover:text-red-500 p-2 rounded-full hover:bg-gray-100 transition"
+           title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+             </div>
         </div>
     </aside>
 
     {% block body %}
 
-    {% endblock %}
+
+{% endblock %}
 
 </body>
 </html>

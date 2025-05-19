@@ -32,7 +32,7 @@ def my_blogs(request):
     page_obj = paginator.get_page(page_number)
 
     context = {
-        "title": "Blog title",
+        "title": "BlogWave-HomePage",
         "user": request.user if request.user.is_authenticated else None,
         "blogs": page_obj,
         "total_pages":range(1,paginator.num_pages+1)
@@ -100,7 +100,7 @@ def blog_detail(request, slug): # Receive slug as a path parameter
     comments = Comment.objects.filter(blog=blog_object).order_by('-created_at') # Fetch approved comments
 
     context = {
-        "title": blog_object.title, # Use the actual blog title
+        "title": "BlogWave-Detail Page",#blog_object.title, # Use the actual blog title
         "user": request.user,
         "blog": blog_object,
         "comments": comments, # Include the comments in the context
@@ -176,3 +176,15 @@ def blogs_by_tag(request, tag_slug):
         'query': f'Tag: {tag.name}'
     })
 
+def articles(request):
+    context = {
+        "title":"BlogWave-Article"
+    }
+    return render(request, "articles.html",context)
+
+
+def aboutpage(request):
+    context = {
+        "title":"BlogWave-About Us"
+    }
+    return render(request, "aboutpage.html",context)

@@ -21,11 +21,22 @@ from django.urls import path,include
 
 
 urlpatterns = [
+     # Web Endpoints
+
     path('admin/', admin.site.urls),
     path('accounts/', include('account.urls')), 
     path('adminpanel/', include('adminpanel.urls')), 
     path('', include('blogs.urls')), 
     path('comments/', include('comment.urls')), 
+
+    # API Endpoints
+    path('api/', include('blogs.blogs_api.routers')),  
+    path('api/', include('adminpanel.adminpanel_api.routers')),
+    path('api/', include('account.account_api.routers')),
+    path('api/', include('comment.comment_api.routers')), 
+
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
  
 ]
 

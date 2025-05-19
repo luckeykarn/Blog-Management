@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "taggit",
     'tinymce',
     'adminpanel',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -79,12 +80,28 @@ WSGI_APPLICATION = 'mainapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'blog',        # Replace with your MySQL database name
+        'USER': 'root',           # Replace with your MySQL username
+        'PASSWORD': "",   # Replace with your MySQL password
+         'HOST': '127.0.0.1',                   # Or your DB host (e.g., 127.0.0.1)
+        'PORT': '3306',                      # Default MySQL port
+         'OPTIONS': {
+            'ssl': {'ssl_disabled': True},
+        }
+        
     }
 }
+# pip install Django==5.0.14
 
 
 # Password validation
@@ -121,12 +138,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Where Django will look for static files in development
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Password_reset via email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

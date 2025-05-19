@@ -1,131 +1,10 @@
+{% extends "base.html" %}
 {% load like_tags %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ModernBlog | Minimal Blog Platform</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-        }
-        .post-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-        }
-        .auth-btn {
-            transition: all 0.2s ease;
-        }
-        .auth-btn:hover {
-            transform: translateY(-1px);
-        }
-        .create-btn {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
-            transition: all 0.3s ease;
-        }
-        .create-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px rgba(79, 70, 229, 0.3);
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .tag {
-            transition: all 0.2s ease;
-        }
-        .tag:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .comment-section {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        .comment-section.active {
-            max-height: 1000px;
-            transition: max-height 0.5s ease-in;
-        }
-        .like-btn {
-            transition: all 0.2s ease;
-        }
-        .like-btn:hover {
-            transform: scale(1.1);
-        }
-        .like-btn.liked {
-            color: #ef4444;
-        }
-    </style>
-</head>
-<body class="min-h-screen">
-    <!-- Header with Auth -->
-    <header class="bg-white py-6 px-4 shadow-sm sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="{% url 'my-blogs' %}" class="text-2xl font-bold text-gray-900 flex items-center">
-                <span class="gradient-text">Modern</span><span class="text-gray-800">Blog</span>
-            </a>
-    
-            <form method="get" action="{% url 'search' %}">
-                <input type="text" name="q" placeholder="Search posts..." class="py-2 px-3 rounded-md border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                <button type="submit" class="text-gray-600 hover:text-gray-800 ml-2">
-                    <i class="fa fa-search"></i>
-                </button>
-            </form>
-            
-            {% if error_message %}
-                <p class="text-red-600 text-sm mt-2">{{ error_message }}</p>
-            {% endif %}
-            
-                
-                <nav class="hidden md:block">
-                    <ul class="flex space-x-8">
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">Home</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">Articles</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900 font-medium">About</a></li>
-                    </ul>
-                </nav>
-    
-                <div class="flex items-center space-x-3 ml-8">
-                    {% if request.user.is_authenticated %}
-                    <div class="relative" id="profileDropdown">
-                        <div class="flex items-center space-x-2 cursor-pointer" id="dropdownToggle">
-                          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full object-cover">
-                          <span class="hidden md:inline text-gray-700 font-medium">{{ request.user.username }}</span>
-                        </div>
-                      
-                        <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden border border-gray-100">
-                          <a href="{% url 'author_dashboard' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
-                          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Settings</a>
-                          <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
-                        </div>
-                      </div>
+ <title>{% block title %}BlogWave-Homepage{% endblock %}</title>
 
-                    {% else %}
-                        <a href="{% url 'user_login' %}" class="auth-btn px-4 py-2 text-gray-700 hover:text-gray-900 font-medium">Login</a>
-                        <a href="{% url 'signup' %}" class="auth-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium">Sign Up</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </header>
-    
-
-    <!-- Hero Section -->
+{% block herosection %} 
+<!-- Hero Section -->
     {% if not request.user.is_authenticated %}
     <section class="py-20 md:py-28 bg-gradient-to-r from-indigo-50 to-purple-50">
         <div class="max-w-4xl mx-auto px-4 text-center">
@@ -142,16 +21,11 @@
         </div>
     </section>
     {% else %}
-    <!-- <section class="py-8 bg-white">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-gray-800">Latest Articles</h2>
-            <a href="{% url 'postblog' %}" class="create-btn px-6 py-3 text-white rounded-lg flex items-center font-medium">
-                <i class="fas fa-plus mr-2"></i> Create New Post
-            </a>
-        </div>
-    </section> -->
+    
     {% endif %}
+{% endblock %}
 
+{% block featuredpost %}
     <!-- Featured Posts -->
     <section class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4">
@@ -302,149 +176,70 @@
             </div>
         </div>
     </section>
+{% endblock %}
 
-    <!-- CTA for Auth -->
-    {% if not request.user.is_authenticated %}
-    <section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-6">Ready to start writing?</h2>
-            <p class="text-lg text-indigo-100 mb-8 max-w-2xl mx-auto">Join thousands of writers sharing their stories and ideas with the world.</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{% url 'signup' %}" class="px-8 py-4 bg-white text-indigo-600 rounded-lg flex items-center justify-center text-lg font-medium shadow-lg hover:bg-gray-50">
-                    <i class="fas fa-pen-fancy mr-2"></i> Start Writing Now
-                </a>
-                <a href="{% url 'user_login' %}" class="px-8 py-4 border border-white/30 text-white rounded-lg hover:bg-white/10 flex items-center justify-center text-lg font-medium">
-                    <i class="fas fa-sign-in-alt mr-2"></i> Login
-                </a>
-            </div>
-        </div>
-    </section>
-    {% endif %}
 
-    <!-- Footer -->
-    <footer class="bg-white py-12 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <a href="{% url 'my-blogs' %}" class="text-2xl font-bold flex items-center">
-                        <span class="gradient-text">Modern</span><span class="text-gray-800">Blog</span>
-                    </a>
-                    <p class="mt-4 text-gray-500 text-sm">A platform for writers and thinkers to share their ideas with the world.</p>
-                    <div class="flex space-x-4 mt-6">
-                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-indigo-600"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Explore</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Popular Posts</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Recent Posts</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Top Writers</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Categories</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Company</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">About Us</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Careers</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Terms of Service</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Support</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Help Center</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Community</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Contact Us</a></li>
-                        <li><a href="#" class="text-gray-600 hover:text-gray-900">Status</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="mt-12 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
-                <p>© 2023 ModernBlog. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Toggle comment sections
-        document.querySelectorAll('.comment-toggle').forEach(button => {
-            button.addEventListener('click', function() {
-                const blogId = this.getAttribute('data-blog-id');
-                const commentSection = document.getElementById(`comments-${blogId}`);
-                commentSection.classList.toggle('active');
-            });
-        });
-        
-        // Like functionality
-        document.querySelectorAll('.like-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const blogId = this.getAttribute('data-blog-id');
-                const heartIcon = this.querySelector('i');
-                
-                // Toggle liked state
-                this.classList.toggle('liked');
-                heartIcon.classList.toggle('far');
-                heartIcon.classList.toggle('fas');
-                
-                // Update like count
-                const likeCount = this.querySelector('span');
-                const currentCount = parseInt(likeCount.textContent);
-                likeCount.textContent = this.classList.contains('liked') ? currentCount + 1 : currentCount - 1;
-                
-                // In a real app, you would send an AJAX request here to update the like in the database
-                // fetch(`/blogs/${blogId}/like/`, { method: 'POST' })
-                //     .then(response => response.json())
-                //     .then(data => {
-                //         likeCount.textContent = data.likes_count;
-                //     });
-            });
-        });
-    </script>
-    <!-- <script>
-        function likeBlog(element){
-           var blog_id = element.id
-           make ajax to hit endpoint of url where endpoint = http://127.0.0.1:8000/like-blog/?blog_id=12
-        }
-    </script> -->
+{% block script %}   
 <script>
-
-function likeBlog(element) {
-        var blog_id = element.id;
-        var url = `/like-blog/?blog_id=${blog_id}`;
-      
-        $.get(url, function(data) {
-          // Handle the successful response
-          console.log('Like successful:', data);
-          // Update UI
-        })
-        .fail(function(error) {
-          // Handle errors
-          console.error('Error liking blog:', error);
+    // Toggle comment sections
+    document.querySelectorAll('.comment-toggle').forEach(button => {
+        button.addEventListener('click', function() {
+            const blogId = this.getAttribute('data-blog-id');
+            const commentSection = document.getElementById(`comments-${blogId}`);
+            commentSection.classList.toggle('active');
         });
-      }
-   </script>
-   <script>
-    const toggleBtn = document.getElementById('dropdownToggle');
-    const dropdown = document.getElementById('dropdownMenu');
-  
-    // Show/hide dropdown on click
-    toggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // prevent click from bubbling up
-      dropdown.classList.toggle('hidden');
     });
-  
-    // Hide dropdown if clicked outside
-    document.addEventListener('click', (e) => {
-      if (!document.getElementById('profileDropdown').contains(e.target)) {
-        dropdown.classList.add('hidden');
-      }
+
+    // Like functionality (icon and count update)
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const blogId = this.getAttribute('data-blog-id');
+            const heartIcon = this.querySelector('i');
+            const likeCount = this.querySelector('span');
+            const currentCount = parseInt(likeCount.textContent);
+
+            // Toggle liked state
+            this.classList.toggle('liked');
+            heartIcon.classList.toggle('far');
+            heartIcon.classList.toggle('fas');
+
+            // Update like count
+            likeCount.textContent = this.classList.contains('liked') ? currentCount + 1 : currentCount - 1;
+
+            // Optional AJAX request to update like status on server
+            // fetch(`/blogs/${blogId}/like/`, { method: 'POST' })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         likeCount.textContent = data.likes_count;
+            //     });
+        });
     });
-  </script>
-</body>
-</html>
+
+    // Like via jQuery GET (used in another context)
+    function likeBlog(element) {
+        const blog_id = element.id;
+        const url = `/like-blog/?blog_id=${blog_id}`;
+
+        $.get(url, function(data) {
+            console.log('Like successful:', data);
+            // Update UI if needed
+        }).fail(function(error) {
+            console.error('Error liking blog:', error);
+        });
+    }
+
+ 
+</script>
+
+{% endblock %}
+
+{% block style %}
+        <style>
+            
+            img {
+                max-width: 361px;
+                max-height: 202px;
+            }
+        </style>
+
+{% endblock %}

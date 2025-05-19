@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+  
+ 
+
+{% block herosection %}
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-indigo-50 to-purple-50 py-16 md:py-24">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                Sharing Knowledge, <span class="gradient-text">Inspiring Innovation</span>
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                We're a team of passionate creators dedicated to exploring the intersection of technology, design, and human potential.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#team" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary font-medium">
+                    Meet Our Team
+                </a>
+                <a href="#values" class="px-6 py-3 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                    Our Values
+                </a>
+            </div>
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+    <!-- Our Story -->
+    <section class="max-w-4xl mx-auto px-4 py-16">
+        <div class="text-center mb-16">
+            <span class="text-primary font-medium">OUR STORY</span>
+            <h2 class="text-3xl font-bold text-gray-900 mt-2 mb-4">From Idea to Impact</h2>
+            <div class="w-20 h-1 bg-primary mx-auto"></div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Founded in 2020</h3>
+                <p class="text-gray-600 mb-6">
+                    ModernBlog began as a small passion project between three friends who wanted to document their learning journey in web development. What started as casual notes quickly grew into a full-fledged publication as readers resonated with our authentic approach to complex topics.
+                </p>
+                <p class="text-gray-600 mb-6">
+                    Today, we reach over 500,000 monthly readers across 120 countries, but we've never lost our original spirit of curiosity and knowledge-sharing.
+                </p>
+                <div class="flex space-x-4">
+                    <div class="flex items-center">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-3">
+                            <i class="fas fa-globe text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-900">120+</div>
+                            <div class="text-sm text-gray-500">Countries</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-3">
+                            <i class="fas fa-users text-primary text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-900">500K+</div>
+                            <div class="text-sm text-gray-500">Monthly Readers</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rounded-xl overflow-hidden shadow-lg">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                     alt="Our founding team working together" 
+                     class="w-full h-auto object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values -->
+    <section id="values" class="bg-gray-50 py-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-primary font-medium">OUR VALUES</span>
+                <h2 class="text-3xl font-bold text-gray-900 mt-2 mb-4">What Guides Us</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    These principles shape every article we publish and every decision we make
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                    <div class="text-primary text-3xl mb-4">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Curiosity First</h3>
+                    <p class="text-gray-600">
+                        We explore topics that genuinely interest us, not just what's trending. Our best content comes from authentic curiosity.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                    <div class="text-primary text-3xl mb-4">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Community Focused</h3>
+                    <p class="text-gray-600">
+                        We write for real people, not algorithms. Reader feedback directly shapes our editorial direction.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                    <div class="text-primary text-3xl mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Continuous Growth</h3>
+                    <p class="text-gray-600">
+                        We're committed to evolving alongside technology. Our team dedicates 20% of time to learning new skills.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-16 bg-gradient-to-r from-primary to-secondary text-white">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="stat-card bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm">
+                    <div class="text-3xl font-bold mb-2">750+</div>
+                    <div class="text-sm opacity-90">Articles Published</div>
+                </div>
+                <div class="stat-card bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm">
+                    <div class="text-3xl font-bold mb-2">50K+</div>
+                    <div class="text-sm opacity-90">Community Members</div>
+                </div>
+                <div class="stat-card bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm">
+                    <div class="text-3xl font-bold mb-2">120+</div>
+                    <div class="text-sm opacity-90">Countries Reached</div>
+                </div>
+                <div class="stat-card bg-white bg-opacity-10 p-6 rounded-xl backdrop-blur-sm">
+                    <div class="text-3xl font-bold mb-2">100%</div>
+                    <div class="text-sm opacity-90">Independent</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team -->
+    <section id="team" class="py-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-primary font-medium">OUR TEAM</span>
+                <h2 class="text-3xl font-bold text-gray-900 mt-2 mb-4">The Minds Behind ModernBlog</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    A diverse collective of writers, designers, and technologists
+                </p>
+            </div>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Team Member 1 -->
+                <div class="team-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 text-center">
+                    <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" 
+                             alt="Sarah Johnson" 
+                             class="w-full h-64 object-cover">
+                        <div class="team-social absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 opacity-0 transform translate-y-2 transition-all">
+                            <div class="flex justify-center space-x-4">
+                                <a href="#" class="text-white hover:text-primary"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="text-white hover:text-primary"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#" class="text-white hover:text-primary"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">Sarah Johnson</h3>
+                        <p class="text-primary mb-3">Editor-in-Chief</p>
+                        <p class="text-gray-600 text-sm">
+                            Former tech journalist with a passion for making complex topics accessible
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Team Member 2 -->
+                <div class="team-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 text-center">
+                    <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                             alt="Michael Chen" 
+                             class="w-full h-64 object-cover">
+                        <div class="team-social absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 opacity-0 transform translate-y-2 transition-all">
+                            <div class="flex justify-center space-x-4">
+                                <a href="#" class="text-white hover:text-primary"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="text-white hover:text-primary"><i class="fab fa-github"></i></a>
+                                <a href="#" class="text-white hover:text-primary"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">Michael Chen</h3>
+                        <p class="text-primary mb-3">Lead Developer</p>
+                        <p class="text-gray-600 text-sm">
+                            Full-stack developer specializing in React and Node.js
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Team Member 3 -->
+                <div class="team-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 text-center">
+                    <div class="relative">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" 
+                             alt="Lisa Rodriguez" 
+                             class="w-full h-64 object-cover">
+                        <div class="team-social absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 opacity-0 transform translate-y-2 transition-all">
+                            <div class="flex justify-center space-x-4">
+                                <a href="#" class="text-white hover:text-primary"><i class="fab fa-dribbble"></i></a>
+                                <a href="#" class="text-white hover:text-primary"><i class="fab fa-behance"></i></a>
+                                <a href="#" class="text-white hover:text-primary"><i class="fas fa-globe"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">Lisa Rodriguez</h3>
+                        <p class="text-primary mb-3">Design Director</p>
+                        <p class="text-gray-600 text-sm">
+                            UX specialist focused on creating intuitive digital experiences
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="/careers" class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                    <i class="fas fa-users mr-2"></i> Join Our Team
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+   
+{% block script %}
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Mobile menu toggle (placeholder)
+        // document.querySelector('button[aria-label="Mobile menu"]').addEventListener('click', function() {
+        //     alert('Mobile menu would open here');
+        // });
+    </script>
+{% endblock %}

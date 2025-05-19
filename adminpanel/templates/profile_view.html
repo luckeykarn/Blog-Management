@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Viewer with Crop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        .image-container {
+            max-height: 70vh;
+            max-width: 90vw;
+        }
+        #imagePreview {
+            max-height: 65vh;
+            display: block;
+            max-width: 100%;
+        }
+        .cropper-container {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-5xl">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Image Viewer with Crop</h1>
+        
+        <div class="image-container mx-auto mb-6 bg-gray-50 rounded-lg overflow-hidden">
+            <!-- Image Preview Container -->
+            <img id="imagePreview" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" 
+                 alt="Preview Image">
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4 mb-6">
+            <!-- Crop Controls -->
+            <button id="cropBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition">
+                <i class="fas fa-crop-alt mr-2"></i> Crop Image
+            </button>
+            <button id="zoomInBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition">
+                <i class="fas fa-search-plus mr-2"></i> Zoom In
+            </button>
+            <button id="zoomOutBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition">
+                <i class="fas fa-search-minus mr-2"></i> Zoom Out
+            </button>
+            <button id="rotateBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition">
+                <i class="fas fa-redo mr-2"></i> Rotate
+            </button>
+            <button id="resetBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition">
+                <i class="fas fa-undo mr-2"></i> Reset
+            </button>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <!-- Change Image Button -->
+            <div class="relative">
+                <input type="file" id="imageUpload" accept="image/*" class="hidden">
+                <label for="imageUpload" 
+                       class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                    <i class="fas fa-upload mr-2"></i> Change Image
+                </label>
+            </div>
+            
+            <!-- Save Changes Button -->
+            <button id="saveBtn" 
+                    class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                <i class="fas fa-save mr-2"></i> Save Changes
+            </button>
+            
+            <!-- Cancel Button -->
+            <button id="cancelBtn" 
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                <i class="fas fa-times mr-2"></i> Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreview = document.getElementById('imagePreview');
+            const cropBtn = document.getElementById('cropBtn');
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+            const rotateBtn = document.getElementById('rotateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            let cropper;
+            
+            // Initialize Cropper when image loads
+            imagePreview.addEventListener('ready', function() {
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: NaN, // Free ratio
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    responsive: true,
+                    restore: true,
+                    checkCrossOrigin: false
+                });
+            });
+            
+            // Handle image upload
+            imageUpload.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+                        imagePreview.src = event.target.result;
+                        
+                        // Reinitialize Cropper with new image
+                        setTimeout(() => {
+                            cropper = new Cropper(imagePreview, {
+                                aspectRatio: NaN,
+                                viewMode: 1,
+                                autoCropArea: 0.8,
+                                responsive: true,
+                                restore: true
+                            });
+                        }, 100);
+                    }
+                    
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            
+            // Crop button
+            cropBtn.addEventListener('click', function() {
+                if (cropper) {
+                    const croppedCanvas = cropper.getCroppedCanvas();
+                    if (croppedCanvas) {
+                        imagePreview.src = croppedCanvas.toDataURL('image/jpeg');
+                        cropper.destroy();
+                        cropper = new Cropper(imagePreview, {
+                            aspectRatio: NaN,
+                            viewMode: 1,
+                            autoCropArea: 0.8,
+                            responsive: true,
+                            restore: true
+                        });
+                    }
+                }
+            });
+            
+            // Zoom in
+            zoomInBtn.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.zoom(0.1);
+                }
+            });
+            
+            // Zoom out
+            zoomOutBtn.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.zoom(-0.1);
+                }
+            });
+            
+            // Rotate
+            rotateBtn.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.rotate(90);
+                }
+            });
+            
+            // Reset
+            resetBtn.addEventListener('click', function() {
+                if (cropper) {
+                    cropper.reset();
+                }
+            });
+            
+            // Save changes
+            saveBtn.addEventListener('click', function() {
+                if (cropper) {
+                    const croppedCanvas = cropper.getCroppedCanvas();
+                    if (croppedCanvas) {
+                        // In a real app, you would send this to your server
+                        const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+                        alert('Image cropped successfully!');
+                        console.log('Cropped image data:', croppedImage);
+                        // Here you would typically upload the cropped image
+                    }
+                }
+            });
+            
+            // Cancel
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('Discard all changes?')) {
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    imagePreview.src = 'https://images.unsplash.com/photo-1506744038136-46273834b3fb';
+                    setTimeout(() => {
+                        cropper = new Cropper(imagePreview, {
+                            aspectRatio: NaN,
+                            viewMode: 1,
+                            autoCropArea: 0.8,
+                            responsive: true,
+                            restore: true
+                        });
+                    }, 100);
+                }
+            });
+            
+            // Initialize Cropper on page load
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: NaN,
+                viewMode: 1,
+                autoCropArea: 0.8,
+                responsive: true,
+                restore: true
+            });
+        });
+    </script>
+</body>
+</html>

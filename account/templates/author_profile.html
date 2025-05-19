@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JohnDoe's Profile | BlogWave</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .stats-card {
+            transition: all 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+        }
+        .post-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .follow-btn {
+            transition: all 0.2s ease;
+        }
+        .follow-btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-white py-6 px-4 shadow-sm sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-gray-900 flex items-center">
+                <span class="gradient-text">Blog</span><span class="text-gray-800">Wave</span>
+            </a>
+            
+            <nav class="hidden md:block">
+                <ul class="flex space-x-8">
+                    <li><a href="{% url 'my-blogs' %}" class="text-gray-600 hover:text-gray-900 font-medium">Home</a></li>
+                    <li><a href="{% url 'articles' %}" class="text-gray-600 hover:text-gray-900 font-medium">Articles</a></li>
+                    <li><a href="{% url 'aboutpage' %}" class="text-gray-600 hover:text-gray-900 font-medium">About</a></li>
+                </ul>
+            </nav>
+
+            <div class="flex items-center space-x-3 ml-8">
+                <div class="relative" id="profileDropdown">
+                    <div class="flex items-center space-x-2 cursor-pointer" id="dropdownToggle">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                        <span class="hidden md:inline text-gray-700 font-medium">{{ request.user.username }}</span>
+                    </div>
+                    <div id="dropdownMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 hidden border border-gray-100">
+                        <a href="{% url 'author_dashboard' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
+                        <a href="{% url 'userlogout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Author Profile Section -->
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Profile Header -->
+        <div class="bg-white rounded-xl shadow-sm p-8 mb-8">
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                <!-- Author Avatar -->
+                <div class="flex-shrink-0">
+                    <img src="https://randomuser.me/api/portraits/men/42.jpg" 
+                         alt="{{ request.user.username }}" 
+                         class="w-32 h-32 rounded-full object-cover border-4 border-indigo-100">
+                </div>
+                
+                <!-- Author Info -->
+                <div class="flex-1 text-center md:text-left">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900">{{ request.user.username }}</h1>
+                            <div class="flex items-center justify-center md:justify-start space-x-4 mt-2">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="fas fa-venus-mars text-sm mr-1"></i>
+                                   {{ request.user.gender }}
+                                </span>
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="fas fa-map-marker-alt text-sm mr-1"></i>
+                                    San Francisco, CA
+                                </span>
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="far fa-calendar-alt text-sm mr-1"></i>
+                                    Joined January 2023
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 md:mt-0 flex space-x-3 justify-center">
+                            <button class="follow-btn px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700">
+                                <i class="fas fa-user-plus mr-2"></i> Follow
+                            </button>
+                            <button class="follow-btn px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">
+                                <i class="fas fa-envelope mr-2"></i> Message
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Bio -->
+                    <p class="text-gray-700 mb-6 max-w-3xl">
+                        {{ request.user.bio }}
+                    </p>
+                    
+                    <!-- Social Links -->
+                    <div class="flex space-x-4 justify-center md:justify-start">
+                        <a href="https://twitter.com/johndoe" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-twitter text-lg"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/johndoe" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-linkedin-in text-lg"></i>
+                        </a>
+                        <a href="https://github.com/johndoe" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fab fa-github text-lg"></i>
+                        </a>
+                        <a href="https://johndoe.dev" class="text-gray-500 hover:text-indigo-600">
+                            <i class="fas fa-globe text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="stats-card bg-white rounded-xl shadow-sm p-6 text-center hover:shadow-md">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">({{user.posts.count}})</div>
+                <div class="text-gray-600">Total Posts</div>
+            </div>
+            <div class="stats-card bg-white rounded-xl shadow-sm p-6 text-center hover:shadow-md">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">({{user.blog_like.count}})</div>
+                <div class="text-gray-600">Total Likes</div>
+            </div>
+            <div class="stats-card bg-white rounded-xl shadow-sm p-6 text-center hover:shadow-md">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">356</div>
+                <div class="text-gray-600">Followers</div>
+            </div>
+            <div class="stats-card bg-white rounded-xl shadow-sm p-6 text-center hover:shadow-md">
+                <div class="text-3xl font-bold text-indigo-600 mb-2">128</div>
+                <div class="text-gray-600">Following</div>
+            </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="border-b border-gray-200 mb-8">
+            <nav class="flex space-x-8">
+                <button class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">
+                    Posts (({{user.posts.count}}))
+                </button>
+                <button class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Liked Posts (56)
+                </button>
+                <!-- <button class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Followers (356)
+                </button>
+                <button class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                    Following (128)
+                </button> -->
+            </nav>
+        </div>
+        
+        <!-- Author's Posts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Post 1 -->
+            <article class="post-card bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md">
+                <a href="/post/sample-post-1">
+                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Post cover" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs text-gray-500">May 15, 2024</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">Technology</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">The Future of Web Development in 2024</h3>
+                        <p class="text-gray-600 text-sm line-clamp-2 mb-4">Exploring the latest trends and technologies that will shape web development in the coming year.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="far fa-heart text-gray-400"></i>
+                                <span class="text-xs text-gray-500">142</span>
+                            </div>
+                            <span class="text-xs text-gray-500">5 min read</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            
+            <!-- Post 2 -->
+            <article class="post-card bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md">
+                <a href="/post/sample-post-2">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Post cover" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs text-gray-500">Apr 28, 2024</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">Design</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">Minimalist Design Principles for Modern Websites</h3>
+                        <p class="text-gray-600 text-sm line-clamp-2 mb-4">How to create clean, effective designs that focus on content and usability.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="far fa-heart text-gray-400"></i>
+                                <span class="text-xs text-gray-500">89</span>
+                            </div>
+                            <span class="text-xs text-gray-500">7 min read</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            
+            <!-- Post 3 -->
+            <article class="post-card bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md">
+                <a href="/post/sample-post-3">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Post cover" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs text-gray-500">Mar 10, 2024</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">Productivity</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">10 Tools to Boost Your Productivity as a Developer</h3>
+                        <p class="text-gray-600 text-sm line-clamp-2 mb-4">Essential tools and apps that can help you work smarter and more efficiently.</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i class="far fa-heart text-gray-400"></i>
+                                <span class="text-xs text-gray-500">156</span>
+                            </div>
+                            <span class="text-xs text-gray-500">8 min read</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="mt-12 text-center">
+            <button class="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">
+                Load More Posts
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="/" class="text-2xl font-bold flex items-center mb-4">
+                        <span class="gradient-text">Modern</span><span class="text-white">Blog</span>
+                    </a>
+                    <p class="mb-4">Exploring technology's impact on creativity and society.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="hover:text-white"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-4">Explore</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/articles" class="hover:text-white">Articles</a></li>
+                        <li><a href="/topics" class="hover:text-white">Topics</a></li>
+                        <li><a href="/guides" class="hover:text-white">Guides</a></li>
+                        <li><a href="/podcast" class="hover:text-white">Podcast</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/about" class="hover:text-white">About</a></li>
+                        <li><a href="/careers" class="hover:text-white">Careers</a></li>
+                        <li><a href="/privacy" class="hover:text-white">Privacy</a></li>
+                        <li><a href="/terms" class="hover:text-white">Terms</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-medium mb-4">Connect</h3>
+                    <ul class="space-y-2">
+                        <li><a href="mailto:hello@modernblog.com" class="hover:text-white">hello@modernblog.com</a></li>
+                        <li><a href="#" class="hover:text-white">Twitter</a></li>
+                        <li><a href="#" class="hover:text-white">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-sm">
+                <p>© 2024 ModernBlog. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('border-indigo-500', 'text-indigo-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+                
+                // Add active class to clicked button
+                button.classList.add('border-indigo-500', 'text-indigo-600');
+                button.classList.remove('border-transparent', 'text-gray-500');
+            });
+        });
+        
+        // Profile dropdown
+        const toggleBtn = document.getElementById('dropdownToggle');
+        const dropdown = document.getElementById('dropdownMenu');
+
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('profileDropdown').contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Follow button functionality
+        const followBtn = document.querySelector('.follow-btn');
+        followBtn.addEventListener('click', function() {
+            if (this.textContent.includes('Follow')) {
+                this.innerHTML = '<i class="fas fa-check mr-2"></i> Following';
+                this.classList.remove('bg-indigo-600');
+                this.classList.add('bg-green-500');
+            } else {
+                this.innerHTML = '<i class="fas fa-user-plus mr-2"></i> Follow';
+                this.classList.remove('bg-green-500');
+                this.classList.add('bg-indigo-600');
+            }
+        });
+    </script>
+</body>
+</html>

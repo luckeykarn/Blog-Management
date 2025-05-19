@@ -35,6 +35,7 @@ def author_dashboard(request):
         'selected_status': selected_status,
         'published_count': published_count,
         'draft_count': draft_count,
+        'include_navbar': True,  # Flag to control navbar inclusion
     }
     return render(request, 'author_dashboard.html', context)
 
@@ -141,7 +142,7 @@ def add_post(request):
                 "user": request.user,
                 "error": str(e)
             }
-            return render(request, "create_blog.html", context)
+            return render(request, 'add-post.html',context)
             
     elif request.method == "GET":
         categories = Category.objects.all()
@@ -305,3 +306,35 @@ def delete_category(request):
             'success': False,
             'error': str(e)
         }, status=500)
+
+
+def navbar(request):
+    return render(request, "navbar.html")
+
+def profile_view(request):
+    return render(request, "profile_view.html")
+
+def post_edit(request,id):
+    blog_id = id
+    print("blog_id",blog_id)
+    blog_object = Blogs.objects.get(id = blog_id)
+    if request.method == "POST":
+        print(request.POST)
+        blog_object.title = request.POST["title"]
+        blog_object.slug = request.POST["slug"]
+        blog_object.content = request.POST["content"]
+        blog_object.category = Category.objects.get(id=request.POST["category"])
+        blog_object.tags = request.POST["tags"]
+        blog_object.status = request.POST["status"]
+        blog_object.cover_image = request.FILES["cover_image"]
+        blog_object.save()
+
+        #use update method
+        # pass
+        return HttpResponse("blog updated success")
+    else:
+        context = {
+            "blog":blog_object,
+            "categories":Category.objects.all()
+        }
+        return render (request,"post_edit.html",context)

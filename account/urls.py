@@ -7,10 +7,10 @@ urlpatterns = [
     path('register/', views.register,name="signup"),
     path('login/', views.user_login,name="user_login"),
     path('logout/', views.user_logout, name='userlogout'),
-    path('profile/', views.profile, name='profile'),
+#     path('profile/', views.profile, name='profile'),
     path('profile-update/', views.Profile_Update,name="profile_update"),
     path('pernisson-error/', views.permission_error,name="permission_error"),
-    
+    path('author-profile/<str:username>/', views.author_profile, name='author_profile'),
    
     # password reset urls
     

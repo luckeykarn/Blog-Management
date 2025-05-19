@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+    <!-- Tailwind CSS -->
+    <!-- <title>{% block title %}{{title}}{% endblock %}</title> -->
+
+
+{% block content %}
+    <!-- Article Container -->
+    <main class="max-w-4xl mx-auto px-4 py-8 md:py-12">
+        <!-- Article Header -->
+        <header class="mb-12 text-center">
+            <div class="flex justify-center space-x-2 mb-4">
+                <a href="{% url 'categories' %}" class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium hover:bg-indigo-200">{{ category.name }}</a>
+                <a href="/category/ai" class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium hover:bg-purple-200">AI</a>
+            </div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4">
+                The Future of AI in Web Development: <span class="gradient-text">2024 Trends</span>
+            </h1>
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-center space-y-2 md:space-y-0 md:space-x-6 text-gray-600 mb-6">
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="{{ request.user.role }}" class="w-8 h-8 rounded-full mr-2">
+                    <span class="font-medium text-gray-800">{{ request.user.username }}</span>
+                </div>
+                <span class="hidden md:block">•</span>
+                <span>May 15, 2024</span>
+                <span class="hidden md:block">•</span>
+                <span>8 min read</span>
+            </div>
+            
+            <div class="flex justify-center space-x-4">
+                <button class="p-2 text-gray-500 hover:text-primary rounded-full hover:bg-gray-100">
+                    <i class="far fa-bookmark"></i>
+                </button>
+                <button class="p-2 text-gray-500 hover:text-primary rounded-full hover:bg-gray-100">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                <button class="p-2 text-gray-500 hover:text-primary rounded-full hover:bg-gray-100">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Featured Image -->
+        <div class="mb-12 rounded-xl overflow-hidden shadow-lg">
+            <img src="https://images.unsplash.com/photo-1677442135136-760c813a743d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                 alt="AI and web development" 
+                 class="w-full h-auto object-cover">
+            <p class="text-center text-sm text-gray-500 mt-2">AI-generated art representing the fusion of coding and artificial intelligence</p>
+        </div>
+
+        <!-- Article Content + Sidebar -->
+        <div class="flex flex-col lg:flex-row gap-12">
+            <!-- Table of Contents (Desktop) -->
+            <aside class="hidden lg:block lg:w-64 flex-shrink-0">
+                <div class="sticky top-24">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="font-bold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-list-ul mr-2 text-primary"></i>
+                            Contents
+                        </h3>
+                        <nav class="space-y-2">
+                            <a href="#introduction" class="block toc-item hover:text-primary">Introduction</a>
+                            <a href="#ai-frameworks" class="block toc-item hover:text-primary">AI Frameworks</a>
+                            <a href="#code-generation" class="block toc-item hover:text-primary">Code Generation</a>
+                            <a href="#design-tools" class="block toc-item hover:text-primary">Design Tools</a>
+                            <a href="#future-trends" class="block toc-item hover:text-primary">Future Trends</a>
+                        </nav>
+                    </div>
+                    
+                    <!-- Progress Indicator -->
+                    <div class="mt-6">
+                        <div class="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                            <div id="reading-progress" class="h-full bg-primary" style="width: 0%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 text-center"><span id="progress-percent">0</span>% read</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Article Content -->
+            <article class="prose lg:prose-lg mx-auto">
+                <section id="introduction">
+                    <p class="lead">Artificial Intelligence is no longer a futuristic concept—it's actively reshaping how we build for the web. From automated code generation to intelligent design systems, 2024 marks a turning point in developer tools.</p>
+                    
+                    <p>The integration of AI into web development workflows has accelerated dramatically in the past year. Tools like GitHub Copilot have become ubiquitous, while new entrants like Amazon CodeWhisperer and Tabnine are pushing the boundaries of what's possible.</p>
+                </section>
+
+                <section id="ai-frameworks">
+                    <h2>Emerging AI Frameworks</h2>
+                    <p>The landscape of AI-assisted development tools has expanded significantly:</p>
+                    
+                    <div class="bg-gray-50 p-6 rounded-xl my-6 border border-gray-200">
+                        <h3 class="font-bold text-lg mb-3">Top AI Dev Tools 2024</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <span class="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">1</span>
+                                <span><strong>GitHub Copilot X</strong> - Now with chat interface and pull request automation</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">2</span>
+                                <span><strong>Amazon CodeWhisperer</strong> - AWS-integrated with security scanning</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">3</span>
+                                <span><strong>Vercel v0</strong> - AI-generated React components from text prompts</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <p>What sets 2024's tools apart is their contextual awareness. They don't just complete code—they understand your project structure, dependencies, and even your team's coding conventions.</p>
+                </section>
+
+                <section id="code-generation">
+                    <h2>Beyond Code Generation</h2>
+                    <p>While code completion gets most attention, AI is transforming other aspects:</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 my-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="text-primary text-2xl mb-3">
+                                <i class="fas fa-bug"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Debugging Assistants</h3>
+                            <p>AI that explains error messages and suggests fixes based on your exact stack and environment.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="text-primary text-2xl mb-3">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Infrastructure Optimization</h3>
+                            <p>Automated analysis of your deployment to suggest cost/performance improvements.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="design-tools">
+                    <h2>AI-Powered Design Tools</h2>
+                    <p>The design-development handoff is being reimagined:</p>
+                    
+                    <img src="https://images.unsplash.com/photo-1682695796954-bad0d0f59ff1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                         alt="AI design tools" 
+                         class="w-full h-auto rounded-xl">
+                    
+                    <p>Tools like Figma's AI features can now:</p>
+                    <ul>
+                        <li>Generate design system components from text prompts</li>
+                        <li>Automatically adapt layouts for different screen sizes</li>
+                        <li>Convert designs to production-ready React code</li>
+                    </ul>
+                </section>
+
+                <section id="future-trends">
+                    <h2>What's Coming Next?</h2>
+                    <p>As we look toward 2025, several trends are emerging:</p>
+                    
+                    <blockquote>
+                        "The most productive developers won't be those who write the most code, but those who most effectively collaborate with AI systems."
+                    </blockquote>
+                    
+                    <p>Expect to see more:</p>
+                    <ol>
+                        <li><strong>Context-aware assistants</strong> that understand your entire codebase</li>
+                        <li><strong>Self-documenting code</strong> systems that maintain docs automatically</li>
+                        <li><strong>AI-powered code reviews</strong> that catch security issues early</li>
+                    </ol>
+                </section>
+                
+                <div class="border-t border-gray-200 mt-12 pt-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center space-x-4">
+                            <button class="like-btn flex items-center space-x-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                <i class="far fa-thumbs-up"></i>
+                                <span>248</span>
+                            </button>
+                            <button class="flex items-center space-x-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                                <i class="far fa-comment"></i>
+                                <span>Discuss</span>
+                            </button>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="p-2 text-gray-500 hover:text-primary rounded-full hover:bg-gray-100">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                            <button class="p-2 text-gray-500 hover:text-primary rounded-full hover:bg-gray-100">
+                                <i class="fab fa-linkedin-in"></i>
+                            </button>
+                            <button class="p-2 text-gray-500 hover:text-primary rounded-full hover:bg-gray-100">
+                                <i class="fab fa-facebook-f"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- Author Bio -->
+    <section class="max-w-4xl mx-auto px-4 py-12">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+            <div class="flex flex-col md:flex-row items-start gap-6">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" 
+                     alt="{{ request.user.username }}" 
+                     class="w-20 h-20 rounded-full object-cover border-2 border-primary">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">About Sarah Johnson</h3>
+                    <p class="text-gray-600 mb-4">Lead Developer Advocate at TechCorp, specializing in AI/ML integration. Author of "The AI-Assisted Developer" newsletter with 50k+ subscribers.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-primary">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-primary">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-primary">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Articles -->
+    <section class="max-w-7xl mx-auto px-4 py-12 bg-gray-100">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">More Like This</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Explore more articles on AI and modern web development</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Article 1 -->
+            <article class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <a href="#">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" 
+                         alt="AI coding" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-gray-500">May 2, 2024</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full text-xs">AI</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">How AI Is Changing Code Reviews</h3>
+                        <p class="text-gray-600 mb-4">Exploring tools that automate pull request analysis and suggest improvements.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                                 alt="Author" 
+                                 class="w-6 h-6 rounded-full mr-2">
+                            <span>Michael Chen</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            
+            <!-- Article 2 -->
+            <article class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <a href="#">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" 
+                         alt="Web design" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-gray-500">April 18, 2024</span>
+                            <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs">Design</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">AI-Generated UI Components</h3>
+                        <p class="text-gray-600 mb-4">Testing the limits of AI-powered design systems in production apps.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <img src="https://randomuser.me/api/portraits/women/65.jpg" 
+                                 alt="Author" 
+                                 class="w-6 h-6 rounded-full mr-2">
+                            <span>Lisa Rodriguez</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            
+            <!-- Article 3 -->
+            <article class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <a href="#">
+                    <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" 
+                         alt="React code" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs text-gray-500">April 5, 2024</span>
+                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">React</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">React + AI: The New Developer Stack</h3>
+                        <p class="text-gray-600 mb-4">How AI tools are being integrated into the React ecosystem.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <img src="https://randomuser.me/api/portraits/men/75.jpg" 
+                                 alt="Author" 
+                                 class="w-6 h-6 rounded-full mr-2">
+                            <span>David Kim</span>
+                        </div>
+                    </div>
+                </a>
+            </article>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="max-w-4xl mx-auto px-4 py-16">
+        <div class="bg-gradient-to-r from-primary to-secondary p-0.5 rounded-xl">
+            <div class="bg-white p-8 rounded-lg text-center">
+                <div class="mx-auto max-w-2xl">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Stay Updated</h2>
+                    <p class="text-gray-600 mb-6">Get the latest articles on AI and web development delivered to your inbox weekly.</p>
+                    <form class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" 
+                               placeholder="Your email address" 
+                               class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <button type="submit" 
+                                class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary font-medium">
+                            Subscribe
+                        </button>
+                    </form>
+                    <p class="text-xs text-gray-500 mt-3">No spam. Unsubscribe anytime.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ {% endblock %}  
+
+ {% block back_top %}
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+{% endblock %}
+
+{% block script %}
+    <script>
+        // Reading progress indicator
+        window.addEventListener('scroll', function() {
+            const article = document.querySelector('article');
+            const articleHeight = article.offsetHeight;
+            const articleTop = article.offsetTop;
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            if (scrollPosition > articleTop) {
+                const progress = ((scrollPosition - articleTop) / (articleHeight - windowHeight)) * 100;
+                document.getElementById('reading-progress').style.width = `${Math.min(progress, 100)}%`;
+                document.getElementById('progress-percent').textContent = Math.min(Math.floor(progress), 100);
+            }
+        });
+
+        // Back to top button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.remove('opacity-100', 'visible');
+                backToTopButton.classList.add('opacity-0', 'invisible');
+            }
+        });
+        
+        backToTopButton.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Like button animation
+        document.querySelector('.like-btn').addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            const count = this.querySelector('span');
+            
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas', 'animate-ping');
+                count.textContent = parseInt(count.textContent) + 1;
+                
+                setTimeout(() => {
+                    icon.classList.remove('animate-ping');
+                }, 500);
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                count.textContent = parseInt(count.textContent) - 1;
+            }
+        });
+
+        // Mobile menu toggle (placeholder)
+        // document.querySelector('button[aria-label="Mobile menu"]').addEventListener('click', function() {
+        //     alert('Mobile menu would open here');
+        // });
+    </script>
+{% endblock %}

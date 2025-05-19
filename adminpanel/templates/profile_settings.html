@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - Author Dashboard</title>
+{% extends "master.html" %}
+
+{% block style %}
+    <title>{% block title %}Author Profile{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -389,49 +387,9 @@
             }
         }
     </style>
-</head>
-<body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="logo">BlogHub</div>
-        
-        <nav class="nav-menu">
-            <a href="{% url 'author_dashboard' %}" class="nav-item">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="{% url 'author_blog' %}" class="nav-item">
-                <i class="fas fa-pen"></i>
-                <span>Posts</span>
-            </a>
-            <a href="{% url 'categories' %}" class="nav-item">
-                <i class="fas fa-list"></i>
-                <span>Categories</span>
-            </a>
-            <a href="{% url 'profile_settings' %}" class="nav-item active">
-                <i class="fas fa-cog"></i>
-                <span>Profile Setting</span>
-            </a>
-        </nav>
-        
-        <div class="user-profile">
-            <div class="user-avatar">
-                {% if request.user.profile_picture %}
-                <img src="{{ request.user.profile_picture.url }}" alt="User Avatar">
-                {% else %}
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Default Avatar">
-                {% endif %}
-            </div>
-            <div class="user-info">
-                <div class="user-name">{{ request.user.username }}</div>
-                <div class="user-role">{{ request.user.role }}</div>
-            </div>
-            <button class="logout-btn" title="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    </aside>
+{% endblock %}
     
+ {% block body %}   
     <!-- Main Content -->
     <main class="main-content">
         <header class="header">
@@ -733,5 +691,5 @@
             });
         });
     </script>
-</body>
-</html>
+
+{% endblock %}

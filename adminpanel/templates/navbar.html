@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block title %}Author Dashboard{% endblock %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #f9fafb;
+            --accent-color: #e5e7eb;
+            --text-color: #111827;
+            --light-text: #6b7280;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f8fafc;
+            color: var(--text-color);
+            flex-direction: column;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            background-color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--accent-color);
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .search-button {
+            background: none;
+            border: none;
+            color: var(--light-text);
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .main-nav {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .main-nav {
+                display: block;
+            }
+        }
+        
+        .nav-list {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-link {
+            color: var(--light-text);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .nav-link:hover {
+            color: var(--text-color);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .auth-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .login-btn {
+            background: none;
+            border: none;
+            color: var(--light-text);
+        }
+        
+        .signup-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .signup-btn:hover {
+            background-color: #4338ca;
+        }
+        
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 10rem;
+            display: none;
+            z-index: 10;
+            border: 1px solid var(--accent-color);
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        
+        .dropdown-link:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-menu {
+            flex: 1;
+        }
+        
+        .nav-item {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            color: var(--light-text);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        .nav-item.active {
+            background-color: #eef2ff;
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+        
+        .nav-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .user-profile {
+            padding: 1.5rem;
+            border-top: 1px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            margin-right: 0.75rem;
+            overflow: hidden;
+        }
+        
+        .sidebar-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--light-text);
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--light-text);
+            cursor: pointer;
+        }
+        
+        /* Main Content Styles */
+        .content-wrapper {
+            display: flex;
+            flex: 1;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-icon {
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: var(--light-text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-card .trend {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .trend.up {
+            color: var(--success-color);
+        }
+        
+        .trend.down {
+            color: var(--danger-color);
+        }
+        
+        .trend i {
+            margin-right: 0.25rem;
+        }
+        
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-title {
+            font-weight: 600;
+        }
+        
+        .chart-actions select {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid var(--accent-color);
+            background-color: white;
+        }
+        
+        .chart-wrapper {
+            height: 250px;
+            position: relative;
+        }
+        
+        .posts-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        
+        .posts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .posts-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background-color: var(--secondary-color);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--light-text);
+        }
+        
+        .posts-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--accent-color);
+            font-size: 0.875rem;
+        }
+        
+        .post-title {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .post-category {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .post-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-published {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-draft {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--light-text);
+            margin-right: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .action-btn.delete:hover {
+            color: var(--danger-color);
+        }
+        
+        /* Footer Styles */
+        .main-footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            padding: 3rem 0;
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-description {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+        
+        .social-link:hover {
+            color: white;
+        }
+        
+        .footer-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .footer-link {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+        
+        /* Animation Styles */
+        .post-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+        
+        .create-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .tag {
+            transition: all 0.2s ease;
+        }
+        
+        .tag:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .comment-section {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .comment-section.active {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+        
+        .like-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .like-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .like-btn.liked {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <a href="{% url 'my-blogs' %}" class="brand-logo">
+                <span class="gradient-text">Blog</span><span>Hub</span>
+            </a>
+            
+            <form method="get" action="{% url 'search' %}" class="search-form">
+                <input type="text" name="q" placeholder="Search posts..." class="search-input">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            
+            {% if error_message %}
+                <p class="text-red-600 text-sm mt-2">{{ error_message }}</p>
+            {% endif %}
+            
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="{% url 'my-blogs' %}" class="nav-link">Home</a></li>
+                    <li><a href="{% url 'articles' %}" class="nav-link">Articles</a></li>
+                    <li><a href="{% url 'aboutpage' %}" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+            
+            <div class="auth-buttons">
+                {% if request.user.is_authenticated %}
+                    <div class="profile-dropdown">
+                        <div class="dropdown-toggle" id="dropdownToggle">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" class="user-avatar">
+                            <span class="hidden md:inline">{{ request.user.username }}</span>
+                        </div>
+                        <div class="dropdown-menu" id="dropdownMenu">
+                            <a href="{% url 'author_dashboard' %}" class="dropdown-link">Dashboard</a>
+                            <a href="{% url 'profile_settings' %}" class="dropdown-link">Settings</a>
+                            <a href="{% url 'userlogout' %}" class="dropdown-link">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'user_login' %}" class="auth-btn login-btn">Login</a>
+                    <a href="{% url 'signup' %}" class="auth-btn signup-btn">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">BlogHub</div>
+            
+            <nav class="nav-menu">
+                <a href="{% url 'author_dashboard' %}" class="nav-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="{% url 'author_blog' %}" class="nav-item">
+                    <i class="fas fa-pen"></i>
+                    Posts
+                </a>
+                <a href="{% url 'categories' %}" class="nav-item">
+                    <i class="fas fa-list"></i>
+                    Categories
+                </a>
+                <a href="{% url 'profile_settings' %}" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Profile Setting
+                </a>
+            </nav>
+            
+            <div class="user-profile">
+                <div class="sidebar-avatar">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar">
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ request.user.username }}</div>
+                    <div class="user-role">{{ request.user.role }}</div>
+                </div>
+                <a href="{% url 'userlogout' %}" class="logout-btn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            {% block body %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="gradient-text">Blog</span><span class="text-white">Hub</span>
+                    </div>
+                    <p class="footer-description">Exploring technology's impact on creativity and society.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="footer-title">Explore</h3>
+                    <div class="footer-links">
+                        <a href="{% url 'articles' %}" class="footer-link">Articles</a>
+                        <a href="{% url 'categories' %}" class="footer-link">Topics</a>
+                        <a href="#" class="footer-link">Guides</a>
+                        <a href="#" class="footer-link">Podcast</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="footer-title">Company</h3>
+                    <div class="footer-links">
+                        <a href="{% url 'aboutpage' %}" class="footer-link">About</a>
+                        <a href="#" class="footer-link">Careers</a>
+                        <a href="#" class="footer-link">Privacy</a>
+                        <a href="#" class="footer-link">Terms</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="footer-title">Connect</h3>
+                    <div class="footer-links">
+                        <a href="mailto:hello@bloghub.com" class="footer-link">hello@bloghub.com</a>
+                        <a href="#" class="footer-link">Twitter</a>
+                        <a href="#" class="footer-link">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 BlogHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownToggle = document.getElementById('dropdownToggle');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            if (dropdownToggle && dropdownMenu) {
+                dropdownToggle.addEventListener('click', function() {
+                    dropdownMenu.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!dropdownToggle.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
