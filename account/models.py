@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
 
     profile_picture = models.ImageField(upload_to="account")
 
-    bio = models.TextField(blank=True)
+    bio = models.TextField(max_length=255,blank=True)
    
     USERNAME_FIELD = "email"
 

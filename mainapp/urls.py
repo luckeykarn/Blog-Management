@@ -18,6 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path,include
+from rest_framework.authtoken.views import obtain_auth_token
 
 
 urlpatterns = [
@@ -31,6 +32,7 @@ urlpatterns = [
 
     # API Endpoints
     path('api/', include('blogs.blogs_api.routers')),  
+    path('api/token/', obtain_auth_token, name='api_token_auth'),  # new token login
     path('api/', include('adminpanel.adminpanel_api.routers')),
     path('api/', include('account.account_api.routers')),
     path('api/', include('comment.comment_api.routers')), 

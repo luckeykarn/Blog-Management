@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'tinymce',
     'adminpanel',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -95,9 +96,9 @@ DATABASES = {
         'PASSWORD': "",   # Replace with your MySQL password
          'HOST': '127.0.0.1',                   # Or your DB host (e.g., 127.0.0.1)
         'PORT': '3306',                      # Default MySQL port
-         'OPTIONS': {
-            'ssl': {'ssl_disabled': True},
-        }
+        #  'OPTIONS': {
+        #     'ssl': {'ssl_disabled': True},
+        # }
         
     }
 }
@@ -174,3 +175,12 @@ PASSWORD_RESET_TIMEOUT = 86400  # 24 hours
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Set the Authentication Classes
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
+
